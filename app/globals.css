@@ -16,6 +16,23 @@
   --sidebar-accent-foreground: hsl(240 5.9% 10%);
   --sidebar-border: hsl(220 13% 91%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
+
+  /* ── Typography scale ───────────────────────────────────── */
+  --text-label: 0.625rem;       /* 10px  – section group labels  */
+  --text-sublabel: 0.6875rem;   /* 11px  – sub-menu items        */
+  --text-body: 0.8125rem;       /* 13px  – buttons, nav labels   */
+  --text-md: 0.9375rem;         /* 15px  – content body          */
+  --text-sidebar-title: 1.125rem; /* 18px – sidebar panel title  */
+  --text-section-heading: 1.75rem; /* 28px – page section headings */
+  --text-display: 2.75rem;      /* 44px  – hero/display text     */
+
+  /* ── Letter-spacing ────────────────────────────────────── */
+  --tracking-aerospace: 0.08em;
+  --tracking-aerospace-nav: 0.1em;
+
+  /* ── Line height ────────────────────────────────────────── */
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
 }
 
 @theme inline {
@@ -32,12 +49,28 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+
+  /* Font family – Space Grotesk from next/font, D-DIN as honoured fallback */
+  --font-sans: var(--font-space-grotesk), "D-DIN", Arial, Helvetica, sans-serif;
+
+  /* Typography scale exposed as Tailwind utilities */
+  --font-size-label: var(--text-label);
+  --font-size-sublabel: var(--text-sublabel);
+  --font-size-body: var(--text-body);
+  --font-size-md: var(--text-md);
+  --font-size-sidebar-title: var(--text-sidebar-title);
+  --font-size-section-heading: var(--text-section-heading);
+  --font-size-display: var(--text-display);
+
+  /* Letter-spacing tokens */
+  --letter-spacing-aerospace: var(--tracking-aerospace);
+  --letter-spacing-aerospace-nav: var(--tracking-aerospace-nav);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "D-DIN", Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -46,12 +79,14 @@ body {
 /* Aerospace text utilities */
 .text-aerospace {
   text-transform: uppercase;
-  letter-spacing: 0.96px;
+  letter-spacing: var(--tracking-aerospace);
+  line-height: var(--leading-tight);
 }
 
 .text-aerospace-nav {
   text-transform: uppercase;
-  letter-spacing: 1.17px;
+  letter-spacing: var(--tracking-aerospace-nav);
+  line-height: var(--leading-tight);
 }
 
 /* ─── Override @solana/wallet-adapter-react-ui styles ─────────────────────── */

@@ -1,19 +1,5 @@
 import { create } from "zustand";
-
-export type NotificationType = "success" | "error" | "info";
-
-export interface Notification {
-  id: string;
-  type: NotificationType;
-  message: string;
-  description?: string;
-}
-
-interface NotificationStore {
-  notifications: Notification[];
-  notify: (type: NotificationType, message: string, description?: string) => void;
-  dismiss: (id: string) => void;
-}
+import { NotificationType, Notification, NotificationStore } from "@/lib/types";
 
 export const useNotificationStore = create<NotificationStore>((set) => ({
   notifications: [],

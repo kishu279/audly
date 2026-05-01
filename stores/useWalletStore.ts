@@ -1,11 +1,5 @@
 import { create } from "zustand";
-
-interface WalletStore {
-  balance: number | null;
-  network: string;
-  setBalance: (balance: number | null) => void;
-  setNetwork: (network: string) => void;
-}
+import { WalletStore } from "@/lib/types";
 
 export const useWalletStore = create<WalletStore>((set) => ({
   balance: null,

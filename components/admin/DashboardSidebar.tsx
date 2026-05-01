@@ -24,14 +24,15 @@ export function DashboardSidebar() {
   return (
     <Sidebar collapsible="none" className="border-r border-white/10 bg-black w-64 min-h-screen">
       <SidebarContent className="bg-black">
-        <div className="p-6">
-          <h2 className="text-xl font-bold text-aerospace text-white">
+        {/* Panel heading */}
+        <div className="px-5 pt-6 pb-4">
+          <h2 className="text-sidebar-title font-bold text-aerospace text-white tracking-[var(--tracking-aerospace)]">
             ADMIN PANEL
           </h2>
         </div>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-aerospace text-white/50 text-[10px]">
+        <SidebarGroup className="pt-1">
+          <SidebarGroupLabel className="text-aerospace text-white/40 text-label px-3 mb-1">
             MANAGEMENT
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -40,7 +41,7 @@ export function DashboardSidebar() {
                 <SidebarMenuButton
                   isActive={activeTab === "company_details"}
                   onClick={() => setActiveTab("company_details")}
-                  className={`text-aerospace-nav hover:bg-white/10 hover:text-white transition-colors ${
+                  className={`text-aerospace-nav text-body hover:bg-white/10 hover:text-white transition-colors ${
                     activeTab === "company_details" ? "bg-white/10 text-white" : "text-white/70"
                   }`}
                 >
@@ -51,11 +52,11 @@ export function DashboardSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => setUpdatePaymentOpen(!updatePaymentOpen)}
-                  className="text-aerospace-nav text-white/70 hover:bg-white/10 hover:text-white transition-colors justify-between w-full flex"
+                  className="text-aerospace-nav text-body text-white/70 hover:bg-white/10 hover:text-white transition-colors justify-between w-full flex"
                 >
                   <span>UPDATE PAYMENT DETAILS</span>
                   <ChevronRight
-                    className={`w-4 h-4 transition-transform ${updatePaymentOpen ? "rotate-90" : ""}`}
+                    className={`w-3.5 h-3.5 transition-transform ${updatePaymentOpen ? "rotate-90" : ""}`}
                   />
                 </SidebarMenuButton>
                 {updatePaymentOpen && (
@@ -64,7 +65,7 @@ export function DashboardSidebar() {
                       <SidebarMenuSubButton
                         isActive={activeTab === "add_workers"}
                         onClick={() => setActiveTab("add_workers")}
-                        className={`text-aerospace-nav text-[11px] hover:bg-white/10 hover:text-white transition-colors ${
+                        className={`text-aerospace-nav text-sublabel hover:bg-white/10 hover:text-white transition-colors ${
                           activeTab === "add_workers" ? "bg-white/10 text-white" : "text-white/50"
                         }`}
                       >
@@ -75,7 +76,7 @@ export function DashboardSidebar() {
                       <SidebarMenuSubButton
                         isActive={activeTab === "update_worker_details"}
                         onClick={() => setActiveTab("update_worker_details")}
-                        className={`text-aerospace-nav text-[11px] hover:bg-white/10 hover:text-white transition-colors ${
+                        className={`text-aerospace-nav text-sublabel hover:bg-white/10 hover:text-white transition-colors ${
                           activeTab === "update_worker_details" ? "bg-white/10 text-white" : "text-white/50"
                         }`}
                       >
@@ -90,7 +91,7 @@ export function DashboardSidebar() {
                 <SidebarMenuButton
                   isActive={activeTab === "view_employees"}
                   onClick={() => setActiveTab("view_employees")}
-                  className={`text-aerospace-nav hover:bg-white/10 hover:text-white transition-colors ${
+                  className={`text-aerospace-nav text-body hover:bg-white/10 hover:text-white transition-colors ${
                     activeTab === "view_employees" ? "bg-white/10 text-white" : "text-white/70"
                   }`}
                 >
@@ -101,8 +102,8 @@ export function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-aerospace text-white/50 text-[10px]">
+        <SidebarGroup className="pt-3">
+          <SidebarGroupLabel className="text-aerospace text-white/40 text-label px-3 mb-1">
             TRANSACTIONS
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -111,7 +112,7 @@ export function DashboardSidebar() {
                 <SidebarMenuButton
                   isActive={activeTab === "payment_status"}
                   onClick={() => setActiveTab("payment_status")}
-                  className={`text-aerospace-nav hover:bg-white/10 hover:text-white transition-colors ${
+                  className={`text-aerospace-nav text-body hover:bg-white/10 hover:text-white transition-colors ${
                     activeTab === "payment_status" ? "bg-white/10 text-white" : "text-white/70"
                   }`}
                 >
@@ -123,7 +124,7 @@ export function DashboardSidebar() {
                 <SidebarMenuButton
                   isActive={activeTab === "cancel_payment"}
                   onClick={() => setActiveTab("cancel_payment")}
-                  className={`text-aerospace-nav hover:bg-red-500/20 hover:text-red-400 transition-colors ${
+                  className={`text-aerospace-nav text-body hover:bg-red-500/20 hover:text-red-400 transition-colors ${
                     activeTab === "cancel_payment" ? "bg-red-500/20 text-red-400" : "text-white/70"
                   }`}
                 >
