@@ -208,11 +208,13 @@ export function AdminContent({ onFileChange, employees, onAddWorker, onUpdateWor
                 <table className="w-full">
                   <thead className="sticky top-0 bg-black z-10 border-b border-white/20">
                     <tr>
-                      {updateColumns.map((column) => (
-                        <th key={column.id || (column.accessorKey as string)} className="text-left p-4 text-white/70 text-sm font-medium">
-                          {column.header as string}
-                        </th>
-                      ))}
+                      <th className="text-left p-4 text-white/70 text-sm font-medium">Employee ID</th>
+                      <th className="text-left p-4 text-white/70 text-sm font-medium">Name</th>
+                      <th className="text-left p-4 text-white/70 text-sm font-medium">Salary</th>
+                      <th className="text-left p-4 text-white/70 text-sm font-medium">Wallet Address</th>
+                      <th className="text-left p-4 text-white/70 text-sm font-medium">Role</th>
+                      <th className="text-left p-4 text-white/70 text-sm font-medium">Department</th>
+                      <th className="text-left p-4 text-white/70 text-sm font-medium">Payment Frequency</th>
                     </tr>
                   </thead>
                   <tbody>
