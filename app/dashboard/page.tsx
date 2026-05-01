@@ -28,6 +28,8 @@ export default function DashboardPage() {
           // data is logging properly
           console.log("Parsed CSV Data:", results.data);
           setEmployees(results.data as Employee[]);
+          /// Fix: storing on the localstorage for now, we can change this to a more secure storage later
+          localStorage.setItem("employees", JSON.stringify(results.data));
         },
         error: (error) => {
           console.error("Error parsing CSV:", error);
@@ -38,6 +40,12 @@ export default function DashboardPage() {
       console.log("No file selected");
     }
   }, [file]);
+
+  React.useEffect(() => {
+    if (localStorage.getItem("employees") != null) {
+      setEmployees(JSON.parse(localStorage.getItem("employees") || "[]"));
+    }
+  }, []);
 
   return (
     <>
@@ -50,7 +58,10 @@ export default function DashboardPage() {
         {role === "admin" && (
           <div className="flex w-full">
             <DashboardSidebar />
-            <AdminContent onFileChange={handleFileChange} employees={employees} />
+            <AdminContent
+              onFileChange={handleFileChange}
+              employees={employees}
+            />
           </div>
         )}
 
