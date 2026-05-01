@@ -89,13 +89,13 @@ export function DashboardSidebar() {
 
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  isActive={activeTab === "view_employees"}
-                  onClick={() => setActiveTab("view_employees")}
+                  isActive={activeTab === "salary_status"}
+                  onClick={() => setActiveTab("salary_status")}
                   className={`text-aerospace-nav text-body hover:bg-white/10 hover:text-white transition-colors ${
-                    activeTab === "view_employees" ? "bg-white/10 text-white" : "text-white/70"
+                    activeTab === "salary_status" ? "bg-white/10 text-white" : "text-white/70"
                   }`}
                 >
-                  VIEW EMPLOYEES
+                  SALARY STATUS
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

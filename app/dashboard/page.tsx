@@ -19,6 +19,20 @@ export default function DashboardPage() {
     setFile(file);
   }, []);
 
+  const handleAddWorker = React.useCallback((employee: Employee) => {
+    const updatedEmployees = [...employees, employee];
+    setEmployees(updatedEmployees);
+    localStorage.setItem("employees", JSON.stringify(updatedEmployees));
+  }, [employees]);
+
+  const handleUpdateWorker = React.useCallback((updatedEmployee: Employee) => {
+    const updatedEmployees = employees.map((emp) => 
+      emp.employeeId === updatedEmployee.employeeId ? updatedEmployee : emp
+    );
+    setEmployees(updatedEmployees);
+    localStorage.setItem("employees", JSON.stringify(updatedEmployees));
+  }, [employees]);
+
   React.useEffect(() => {
     // if only file is present
     if (file) {
@@ -61,6 +75,8 @@ export default function DashboardPage() {
             <AdminContent
               onFileChange={handleFileChange}
               employees={employees}
+              onAddWorker={handleAddWorker}
+              onUpdateWorker={handleUpdateWorker}
             />
           </div>
         )}
