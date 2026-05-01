@@ -1,26 +1,132 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #f0f0fa;
+  --ghost-bg: rgba(240, 240, 250, 0.1);
+  --ghost-border: rgba(240, 240, 250, 0.35);
+  --white-100: #ffffff;
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-ghost: var(--ghost-bg);
+  --color-ghost-border: var(--ghost-border);
+  --color-white-100: var(--white-100);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "D-DIN", Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Aerospace text utilities */
+.text-aerospace {
+  text-transform: uppercase;
+  letter-spacing: 0.96px;
+}
+
+.text-aerospace-nav {
+  text-transform: uppercase;
+  letter-spacing: 1.17px;
+}
+
+/* ─── Override @solana/wallet-adapter-react-ui styles ─────────────────────── */
+
+/* Modal overlay */
+.wallet-adapter-modal-wrapper {
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(240, 240, 250, 0.12) !important;
+  border-radius: 12px !important;
+}
+
+/* Modal title */
+.wallet-adapter-modal-title {
+  font-family: "D-DIN", Arial, sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.17px !important;
+  color: #f0f0fa !important;
+  font-size: 14px !important;
+}
+
+/* Each wallet button in the modal */
+.wallet-adapter-button {
+  font-family: "D-DIN", Arial, sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.17px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #f0f0fa !important;
+  background: rgba(240, 240, 250, 0.05) !important;
+  border: 1px solid rgba(240, 240, 250, 0.2) !important;
+  border-radius: 8px !important;
+  transition: background 0.2s, border-color 0.2s !important;
+}
+
+.wallet-adapter-button:hover {
+  background: rgba(240, 240, 250, 0.12) !important;
+  border-color: rgba(240, 240, 250, 0.35) !important;
+}
+
+/* Connect button (when used standalone) */
+.wallet-adapter-button-trigger {
+  background: rgba(240, 240, 250, 0.1) !important;
+  border: 1px solid rgba(240, 240, 250, 0.35) !important;
+  border-radius: 32px !important;
+  padding: 10px 18px !important;
+  font-family: "D-DIN", Arial, sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.17px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #f0f0fa !important;
+}
+
+/* Modal close button */
+.wallet-adapter-modal-button-close {
+  background: rgba(240, 240, 250, 0.05) !important;
+}
+
+/* Animate-in utility for notifications */
+@keyframes slide-in-from-right {
+  from { transform: translateX(1.25rem); opacity: 0; }
+  to   { transform: translateX(0);      opacity: 1; }
+}
+.animate-in {
+  animation: slide-in-from-right 0.3s ease forwards;
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
