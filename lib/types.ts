@@ -2,7 +2,6 @@
 export interface Employee {
   employeeAddress: string;
   amount: number;
-  frequency: string;
 }
 
 // Component Props Types
@@ -19,6 +18,7 @@ export interface CompanyDetails {
   totalAmount: number;
   symbol: string;
   mintAddress: string;
+  frequency: string;
 }
 
 export interface WalletStore {

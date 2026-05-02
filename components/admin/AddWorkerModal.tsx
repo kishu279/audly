@@ -28,7 +28,6 @@ export function AddWorkerModal({ onAddWorker }: AddWorkerModalProps) {
     const newEmployee: Employee = {
       employeeAddress: formData.get("employeeAddress") as string,
       amount: Number(formData.get("amount")),
-      frequency: formData.get("frequency") as string,
     };
 
     onAddWorker(newEmployee);
@@ -73,17 +72,6 @@ export function AddWorkerModal({ onAddWorker }: AddWorkerModalProps) {
               required
               className="bg-transparent border-white/20 text-white"
               placeholder="e.g. 5000"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="frequency">Frequency *</FieldLabel>
-            <Input
-              id="frequency"
-              name="frequency"
-              required
-              className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. Monthly"
             />
           </Field>
 

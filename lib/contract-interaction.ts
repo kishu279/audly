@@ -39,6 +39,7 @@ class ContractInteraction {
     totalAmount: number,
     symbol: string,
     mintAddress: string,
+    frequency: Frequency,
   ) {
     if (!wallet?.publicKey) {
       return {
@@ -50,6 +51,9 @@ class ContractInteraction {
     const program = this.getProgram(wallet);
     let mintAddressPubkey = new PublicKey(mintAddress);
     let totalAmountBN = new BN(totalAmount);
+
+    // Convert frequency to Anchor enum format
+    const frequencyEnum = frequency === Frequency.Weekly ? { weekly: {} } : { monthly: {} };
 
     try {
       // Derive payroll_config PDA
@@ -64,8 +68,15 @@ class ContractInteraction {
         program.programId,
       );
 
+      console.log("Program ID:", program.programId.toBase58());
+      console.log("Payroll Config PDA:", payrollConfigPda.toBase58());
+      console.log("Vault PDA:", vaultPda.toBase58());
+      console.log("Mint:", mintAddressPubkey.toBase58());
+      console.log("Authority:", wallet.publicKey.toBase58());
+      console.log("Frequency:", frequencyEnum);
+
       const txSignature = await program.methods
-        .initializePayroll(totalAmountBN, symbol)
+        .initializePayroll(totalAmountBN, frequencyEnum, symbol)
         .accountsPartial({
           payrollConfig: payrollConfigPda,
           vault: vaultPda,
@@ -82,7 +93,24 @@ class ContractInteraction {
         message: "Payroll initialized successfully",
         data: { txSignature },
       };
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Full error details:", error);
+      
+      // Try to get transaction logs if available
+      if (error.logs) {
+        console.error("Transaction logs:", error.logs);
+      }
+      
+      // Check if it's a SendTransactionError
+      if (error.getLogs) {
+        try {
+          const logs = await error.getLogs();
+          console.error("Detailed logs:", logs);
+        } catch (logError) {
+          console.error("Could not fetch logs:", logError);
+        }
+      }
+      
       return {
         success: false,
         error:
@@ -96,7 +124,6 @@ class ContractInteraction {
     wallet: AnchorWallet,
     employeeAddress: string,
     amount: number,
-    frequency: Frequency,
   ) {
     if (!wallet?.publicKey) {
       return {
@@ -109,9 +136,13 @@ class ContractInteraction {
     let employeeWalletPubkey = new PublicKey(employeeAddress);
     let amountBN = new BN(amount);
 
-    // Convert frequency string to Anchor enum format
-    const frequencyEnum =
-      frequency === Frequency.Weekly ? { weekly: {} } : { monthly: {} };
+    // Check if employee wallet is same as authority
+    if (employeeWalletPubkey.equals(wallet.publicKey)) {
+      return {
+        success: false,
+        error: "Employee wallet cannot be the same as authority wallet",
+      };
+    }
 
     try {
       // deriving the payroll pda from the company admin wallet address and the "payroll" seed
@@ -149,7 +180,7 @@ class ContractInteraction {
       console.log("Authority:", wallet.publicKey.toBase58());
 
       const txSignature = await program.methods
-        .addEmployee(amountBN, frequencyEnum)
+        .addEmployee(amountBN)
         .accountsPartial({
           payroll: payrollPda,
           employee: employeePda,

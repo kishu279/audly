@@ -34,10 +34,6 @@ const columns: ColumnDef<Employee>[] = [
     accessorKey: "amount",
     header: "Amount",
   },
-  {
-    accessorKey: "frequency",
-    header: "Frequency",
-  },
 ];
 
 const updateColumns: ColumnDef<Employee>[] = [
@@ -48,10 +44,6 @@ const updateColumns: ColumnDef<Employee>[] = [
   {
     accessorKey: "amount",
     header: "Amount",
-  },
-  {
-    accessorKey: "frequency",
-    header: "Frequency",
   },
 ];
 
@@ -123,6 +115,14 @@ export function AdminContent({
                       {companyDetails.mintAddress}
                     </p>
                   </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-aerospace text-white/50 text-label">
+                      PAYMENT FREQUENCY
+                    </label>
+                    <p className="text-aerospace text-white text-md">
+                      {companyDetails.frequency}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -152,6 +152,7 @@ export function AdminContent({
                   totalAmount: Number(formData.get("totalAmount")),
                   symbol: formData.get("symbol") as string,
                   mintAddress: formData.get("mintAddress") as string,
+                  frequency: formData.get("frequency") as string,
                 };
 
                 await onHandleSaveCompanyDetails(details);
@@ -213,6 +214,26 @@ export function AdminContent({
                   className="bg-transparent border border-white/20 rounded-md px-4 py-3 text-white focus:outline-none focus:border-white/50 text-aerospace text-body"
                   placeholder="E.G. EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
                 />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-aerospace text-white/70 text-body">
+                  PAYMENT FREQUENCY
+                </label>
+                <select
+                  name="frequency"
+                  required
+                  className="bg-transparent border border-white/20 rounded-md px-4 py-3 text-white focus:outline-none focus:border-white/50 text-aerospace text-body"
+                >
+                  <option value="" disabled selected className="bg-black">
+                    SELECT FREQUENCY
+                  </option>
+                  <option value="Weekly" className="bg-black">
+                    WEEKLY
+                  </option>
+                  <option value="Monthly" className="bg-black">
+                    MONTHLY
+                  </option>
+                </select>
               </div>
 
               <button
@@ -277,9 +298,6 @@ export function AdminContent({
                       <th className="text-left p-4 text-white/70 text-sm font-medium">
                         Amount
                       </th>
-                      <th className="text-left p-4 text-white/70 text-sm font-medium">
-                        Frequency
-                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -293,9 +311,6 @@ export function AdminContent({
                             <td className="p-4 text-white text-sm">
                               {employee.amount}
                             </td>
-                            <td className="p-4 text-white text-sm">
-                              {employee.frequency}
-                            </td>
                           </tr>
                         </HoverCardTrigger>
                         <HoverCardContent className="bg-black border-white/20 text-white w-80">
@@ -304,8 +319,8 @@ export function AdminContent({
                               Update Worker Details
                             </h4>
                             <p className="text-xs text-white/70">
-                              Click the button below to modify amount or
-                              frequency for {employee.employeeAddress}.
+                              Click the button below to modify amount for{" "}
+                              {employee.employeeAddress}.
                             </p>
                             <Button
                               variant="ghost_spacex"

@@ -34,11 +34,15 @@ export default function DashboardPage() {
 
       setIsLoading(true);
       try {
+        // Convert frequency string to enum
+        const frequencyEnum = details.frequency.toLowerCase() === 'weekly' ? Frequency.Weekly : Frequency.Monthly;
+        
         const result = await contractInteraction.initializePayroll(
           wallet,
           details.totalAmount,
           details.symbol,
           details.mintAddress,
+          frequencyEnum,
         );
 
         console.log("Initialize Payroll Result:", result);
@@ -98,14 +102,10 @@ export default function DashboardPage() {
       setIsLoading(true);
       try {
         for (const emp of employee) {
-          // Convert frequency string to enum
-          const frequencyEnum = emp.frequency.toLowerCase() === 'weekly' ? Frequency.Weekly : Frequency.Monthly;
-          
           const result = await contractInteraction.addEmployeeFunction(
             wallet,
             emp.employeeAddress,
             emp.amount,
-            frequencyEnum,
           );
 
           console.log(`Add Employee ${emp.employeeAddress} Result:`, result);

@@ -79,14 +79,6 @@ export type Auddly = {
         {
           "name": "amount",
           "type": "u64"
-        },
-        {
-          "name": "frequency",
-          "type": {
-            "defined": {
-              "name": "frequency"
-            }
-          }
         }
       ]
     },
@@ -204,6 +196,14 @@ export type Auddly = {
         {
           "name": "totalAmount",
           "type": "u64"
+        },
+        {
+          "name": "frequency",
+          "type": {
+            "defined": {
+              "name": "frequency"
+            }
+          }
         },
         {
           "name": "symbol",
@@ -354,14 +354,6 @@ export type Auddly = {
             "type": "i64"
           },
           {
-            "name": "frequency",
-            "type": {
-              "defined": {
-                "name": "frequency"
-              }
-            }
-          },
-          {
             "name": "bump",
             "type": "u8"
           }
@@ -406,6 +398,14 @@ export type Auddly = {
           {
             "name": "employeeCount",
             "type": "u32"
+          },
+          {
+            "name": "frequency",
+            "type": {
+              "defined": {
+                "name": "frequency"
+              }
+            }
           },
           {
             "name": "startTime",

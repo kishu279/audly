@@ -28,7 +28,6 @@ export function UpdateWorkerModal({ employee, open, onOpenChange, onUpdateWorker
     const updatedEmployee: Employee = {
       employeeAddress: formData.get("employeeAddress") as string,
       amount: Number(formData.get("amount")),
-      frequency: formData.get("frequency") as string,
     };
 
     onUpdateWorker(updatedEmployee);
@@ -69,17 +68,6 @@ export function UpdateWorkerModal({ employee, open, onOpenChange, onUpdateWorker
               type="number"
               required
               defaultValue={employee.amount}
-              className="bg-transparent border-white/20 text-white"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="frequency">Frequency *</FieldLabel>
-            <Input
-              id="frequency"
-              name="frequency"
-              required
-              defaultValue={employee.frequency}
               className="bg-transparent border-white/20 text-white"
             />
           </Field>
