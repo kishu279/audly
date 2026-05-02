@@ -26,13 +26,9 @@ export function AddWorkerModal({ onAddWorker }: AddWorkerModalProps) {
     const formData = new FormData(e.currentTarget);
     
     const newEmployee: Employee = {
-      employeeId: formData.get("employeeId") as string,
-      employeeName: formData.get("employeeName") as string,
-      eployeeSalary: Number(formData.get("eployeeSalary")),
-      employeeWallet: formData.get("employeeWallet") as string,
-      eployeeRole: formData.get("eployeeRole") as string,
-      employeeDepartment: formData.get("employeeDepartment") as string,
-      eployeePaymentFrequency: formData.get("eployeePaymentFrequency") as string,
+      employeeAddress: formData.get("employeeAddress") as string,
+      amount: Number(formData.get("amount")),
+      frequency: formData.get("frequency") as string,
     };
 
     onAddWorker(newEmployee);
@@ -58,79 +54,33 @@ export function AddWorkerModal({ onAddWorker }: AddWorkerModalProps) {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
           <Field>
-            <FieldLabel htmlFor="employeeId">Employee ID *</FieldLabel>
+            <FieldLabel htmlFor="employeeAddress">Employee Address *</FieldLabel>
             <Input
-              id="employeeId"
-              name="employeeId"
+              id="employeeAddress"
+              name="employeeAddress"
               required
               className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. EMP001"
+              placeholder="e.g. 5VuMUWoowHHFVwvnAPiS1nRd9vmdEFaVHwoy944b3KPC"
             />
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="employeeName">Employee Name *</FieldLabel>
+            <FieldLabel htmlFor="amount">Amount *</FieldLabel>
             <Input
-              id="employeeName"
-              name="employeeName"
-              required
-              className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. John Doe"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="eployeeSalary">Salary *</FieldLabel>
-            <Input
-              id="eployeeSalary"
-              name="eployeeSalary"
+              id="amount"
+              name="amount"
               type="number"
               required
               className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. 75000"
+              placeholder="e.g. 5000"
             />
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="employeeWallet">Wallet Address *</FieldLabel>
+            <FieldLabel htmlFor="frequency">Frequency *</FieldLabel>
             <Input
-              id="employeeWallet"
-              name="employeeWallet"
-              required
-              className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. 0x1234567890abcdef..."
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="eployeeRole">Role *</FieldLabel>
-            <Input
-              id="eployeeRole"
-              name="eployeeRole"
-              required
-              className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. Senior Developer"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="employeeDepartment">Department *</FieldLabel>
-            <Input
-              id="employeeDepartment"
-              name="employeeDepartment"
-              required
-              className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. Engineering"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="eployeePaymentFrequency">
-              Payment Frequency *
-            </FieldLabel>
-            <Input
-              id="eployeePaymentFrequency"
-              name="eployeePaymentFrequency"
+              id="frequency"
+              name="frequency"
               required
               className="bg-transparent border-white/20 text-white"
               placeholder="e.g. Monthly"

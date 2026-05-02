@@ -23,9 +23,8 @@ interface WalletContextProviderProps {
 }
 
 const WalletContextProvider: FC<WalletContextProviderProps> = ({ children }) => {
-  // Set to Devnet for development; change to Mainnet for production
   const network = WalletAdapterNetwork.Devnet;
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = useMemo(() => "http://127.0.0.1:8899", []);
 
   const wallets = useMemo(
     () => [

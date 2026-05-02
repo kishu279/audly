@@ -1,0 +1,5 @@
+MINT-ADDRESS="5VuMUWoowHHFVwvnAPiS1nRd9vmdEFaVHwoy944b3KPC"
+wallet-address="ADm5yXExUnTnrYz1iuNNUZVEg5tiPDcW8nMPQQebPRKt"
+
+send-signature-me="42joUJguEkzCPPkYbodkX63XaB6XB5XbWXFmiZyJ2C3RzmkNk9hsantyNcJwx6GraD2ccmKPuDkUJtNKo4CCw3cM"
+send signature-subh="659VdEtfmVEprgZWivWPBMAcXJ5A6xuFYiEwL1Zo4ZMCdg3KbFoGoQ7CC5E6LvEYgvXncz6pZ2nepyS7mT9hBewG"

@@ -26,13 +26,9 @@ export function UpdateWorkerModal({ employee, open, onOpenChange, onUpdateWorker
     const formData = new FormData(e.currentTarget);
     
     const updatedEmployee: Employee = {
-      employeeId: formData.get("employeeId") as string,
-      employeeName: formData.get("employeeName") as string,
-      eployeeSalary: Number(formData.get("eployeeSalary")),
-      employeeWallet: formData.get("employeeWallet") as string,
-      eployeeRole: formData.get("eployeeRole") as string,
-      employeeDepartment: formData.get("employeeDepartment") as string,
-      eployeePaymentFrequency: formData.get("eployeePaymentFrequency") as string,
+      employeeAddress: formData.get("employeeAddress") as string,
+      amount: Number(formData.get("amount")),
+      frequency: formData.get("frequency") as string,
     };
 
     onUpdateWorker(updatedEmployee);
@@ -54,82 +50,36 @@ export function UpdateWorkerModal({ employee, open, onOpenChange, onUpdateWorker
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
           <Field>
-            <FieldLabel htmlFor="employeeId">Employee ID *</FieldLabel>
+            <FieldLabel htmlFor="employeeAddress">Employee Address *</FieldLabel>
             <Input
-              id="employeeId"
-              name="employeeId"
+              id="employeeAddress"
+              name="employeeAddress"
               required
-              defaultValue={employee.employeeId}
+              defaultValue={employee.employeeAddress}
               className="bg-transparent border-white/20 text-white"
               readOnly
             />
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="employeeName">Employee Name *</FieldLabel>
+            <FieldLabel htmlFor="amount">Amount *</FieldLabel>
             <Input
-              id="employeeName"
-              name="employeeName"
-              required
-              defaultValue={employee.employeeName}
-              className="bg-transparent border-white/20 text-white"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="eployeeSalary">Salary *</FieldLabel>
-            <Input
-              id="eployeeSalary"
-              name="eployeeSalary"
+              id="amount"
+              name="amount"
               type="number"
               required
-              defaultValue={employee.eployeeSalary}
+              defaultValue={employee.amount}
               className="bg-transparent border-white/20 text-white"
             />
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="employeeWallet">Wallet Address *</FieldLabel>
+            <FieldLabel htmlFor="frequency">Frequency *</FieldLabel>
             <Input
-              id="employeeWallet"
-              name="employeeWallet"
+              id="frequency"
+              name="frequency"
               required
-              defaultValue={employee.employeeWallet}
-              className="bg-transparent border-white/20 text-white"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="eployeeRole">Role *</FieldLabel>
-            <Input
-              id="eployeeRole"
-              name="eployeeRole"
-              required
-              defaultValue={employee.eployeeRole}
-              className="bg-transparent border-white/20 text-white"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="employeeDepartment">Department *</FieldLabel>
-            <Input
-              id="employeeDepartment"
-              name="employeeDepartment"
-              required
-              defaultValue={employee.employeeDepartment}
-              className="bg-transparent border-white/20 text-white"
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="eployeePaymentFrequency">
-              Payment Frequency *
-            </FieldLabel>
-            <Input
-              id="eployeePaymentFrequency"
-              name="eployeePaymentFrequency"
-              required
-              defaultValue={employee.eployeePaymentFrequency}
+              defaultValue={employee.frequency}
               className="bg-transparent border-white/20 text-white"
             />
           </Field>

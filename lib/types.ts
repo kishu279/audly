@@ -1,12 +1,8 @@
 // Employee/Worker Types
 export interface Employee {
-  employeeId: string;
-  employeeName: string;
-  eployeeSalary: number;
-  employeeWallet: string;
-  eployeeRole: string;
-  employeeDepartment: string;
-  eployeePaymentFrequency: string;
+  employeeAddress: string;
+  amount: number;
+  frequency: string;
 }
 
 // Component Props Types
@@ -20,6 +16,9 @@ export type Role = "admin" | "worker" | null;
 export interface CompanyDetails {
   name: string;
   registrationNumber: string;
+  totalAmount: number;
+  symbol: string;
+  mintAddress: string;
 }
 
 export interface WalletStore {
@@ -52,4 +51,9 @@ export interface NotificationStore {
   notifications: Notification[];
   notify: (type: NotificationType, message: string, description?: string) => void;
   dismiss: (id: string) => void;
+}
+
+export enum Frequency {
+  Weekly = "weekly",
+  Monthly = "monthly",
 }
