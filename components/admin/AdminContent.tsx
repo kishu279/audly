@@ -22,6 +22,8 @@ interface AdminContentProps {
   onUpdateWorker: (employee: Employee) => void;
   onHandleSaveCompanyDetails: (details: CompanyDetails) => void;
   onHandleAddWorker: (employee: Employee[]) => void;
+  onHandleDeposit: (amount: number) => void;
+  onHandleStartPayroll: () => void;
   isLoading: boolean;
 }
 
@@ -54,6 +56,8 @@ export function AdminContent({
   onUpdateWorker,
   onHandleSaveCompanyDetails,
   onHandleAddWorker,
+  onHandleDeposit,
+  onHandleStartPayroll,
   isLoading,
 }: AdminContentProps) {
   const { activeTab, companyDetails, setCompanyDetails } = useAdminStore();
@@ -101,14 +105,6 @@ export function AdminContent({
                   </div>
                   <div className="flex flex-col gap-1">
                     <label className="text-aerospace text-white/50 text-label">
-                      TOKEN SYMBOL
-                    </label>
-                    <p className="text-aerospace text-white text-md">
-                      {companyDetails.symbol}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-aerospace text-white/50 text-label">
                       MINT ADDRESS
                     </label>
                     <p className="text-aerospace text-white text-md break-all">
@@ -125,6 +121,13 @@ export function AdminContent({
                   </div>
                 </div>
               </div>
+              <button
+                onClick={onHandleStartPayroll}
+                disabled={isLoading}
+                className="mt-3 text-body font-bold text-aerospace-nav text-white bg-ghost border border-ghost-border rounded-[32px] px-[18px] py-[11px] hover:bg-white/20 hover:text-white-100 transition-all self-start disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "STARTING..." : "START PAYROLL"}
+              </button>
             </div>
           );
         }
@@ -135,7 +138,7 @@ export function AdminContent({
               className="text-section-heading font-bold text-aerospace text-white"
               style={{ lineHeight: "var(--leading-tight)" }}
             >
-              ADD COMPANY DETAILS
+              COMPANY DETAILS
             </h1>
             <p className="text-aerospace text-white/70 text-md">
               PLEASE ENTER YOUR COMPANY DETAILS TO PROCEED WITH PAYROLL SETUP.
@@ -150,7 +153,6 @@ export function AdminContent({
                   name: formData.get("name") as string,
                   registrationNumber: formData.get("regNumber") as string,
                   totalAmount: Number(formData.get("totalAmount")),
-                  symbol: formData.get("symbol") as string,
                   mintAddress: formData.get("mintAddress") as string,
                   frequency: formData.get("frequency") as string,
                 };
@@ -195,17 +197,6 @@ export function AdminContent({
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-aerospace text-white/70 text-body">
-                  TOKEN SYMBOL
-                </label>
-                <input
-                  name="symbol"
-                  required
-                  className="bg-transparent border border-white/20 rounded-md px-4 py-3 text-white focus:outline-none focus:border-white/50 text-aerospace text-body"
-                  placeholder="E.G. USDC"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-aerospace text-white/70 text-body">
                   MINT ADDRESS
                 </label>
                 <input
@@ -222,9 +213,10 @@ export function AdminContent({
                 <select
                   name="frequency"
                   required
+                  defaultValue=""
                   className="bg-transparent border border-white/20 rounded-md px-4 py-3 text-white focus:outline-none focus:border-white/50 text-aerospace text-body"
                 >
-                  <option value="" disabled selected className="bg-black">
+                  <option value="" disabled className="bg-black">
                     SELECT FREQUENCY
                   </option>
                   <option value="Weekly" className="bg-black">
@@ -350,18 +342,52 @@ export function AdminContent({
           </div>
         );
 
-      case "salary_status":
+      case "deposit":
         return (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 max-w-xl">
             <h1
               className="text-section-heading font-bold text-aerospace text-white"
               style={{ lineHeight: "var(--leading-tight)" }}
             >
-              SALARY STATUS
+              DEPOSIT
             </h1>
             <p className="text-aerospace text-white/70 text-md">
-              [ SALARY STATUS PLACEHOLDER ]
+              DEPOSIT FUNDS TO THE PAYROLL VAULT TO PAY YOUR EMPLOYEES.
             </p>
+
+            <form
+              className="flex flex-col gap-4 mt-2"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const amount = Number(formData.get("depositAmount"));
+                const form = e.currentTarget;
+                await onHandleDeposit(amount);
+                form.reset();
+              }}
+            >
+              <div className="flex flex-col gap-2">
+                <label className="text-aerospace text-white/70 text-body">
+                  DEPOSIT AMOUNT
+                </label>
+                <input
+                  name="depositAmount"
+                  type="number"
+                  required
+                  min="1"
+                  className="bg-transparent border border-white/20 rounded-md px-4 py-3 text-white focus:outline-none focus:border-white/50 text-aerospace text-body"
+                  placeholder="E.G. 50000"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="mt-3 text-body font-bold text-aerospace-nav text-white bg-ghost border border-ghost-border rounded-[32px] px-[18px] py-[11px] hover:bg-white/20 hover:text-white-100 transition-all self-start disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "DEPOSITING..." : "DEPOSIT FUNDS"}
+              </button>
+            </form>
           </div>
         );
 

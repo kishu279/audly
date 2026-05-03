@@ -5,6 +5,8 @@ import { useAdminStore } from "@/stores/useAdminStore";
 import { RoleSelectionModal } from "@/components/admin/RoleSelectionModal";
 import { DashboardSidebar } from "@/components/admin/DashboardSidebar";
 import { AdminContent } from "@/components/admin/AdminContent";
+import { WorkerSidebar } from "@/components/worker/WorkerSidebar";
+import { WorkerContent } from "@/components/worker/WorkerContent";
 import { Navbar } from "@/components/sections/Navbar";
 import Papa from "papaparse";
 import { CompanyDetails, Employee, Frequency } from "@/lib/types";
@@ -40,7 +42,6 @@ export default function DashboardPage() {
         const result = await contractInteraction.initializePayroll(
           wallet,
           details.totalAmount,
-          details.symbol,
           details.mintAddress,
           frequencyEnum,
         );
@@ -142,6 +143,120 @@ export default function DashboardPage() {
     [wallet, notify],
   );
 
+  // DEPOSIT FUNDS TO PAYROLL VAULT
+  const handleDeposit = React.useCallback(
+    async (amount: number) => {
+      if (!wallet) {
+        notify(
+          "error",
+          "Wallet not connected",
+          "Please connect your wallet to continue",
+        );
+        return;
+      }
+
+      // Check if company details exist (payroll initialized)
+      const companyDetails = localStorage.getItem("companyDetails");
+      if (!companyDetails) {
+        notify(
+          "error",
+          "Payroll not initialized",
+          "Please initialize payroll in Company Details first",
+        );
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const result = await contractInteraction.depositAmount(wallet, amount);
+
+        console.log("Deposit Result:", result);
+
+        if (result.success) {
+          notify(
+            "success",
+            "Deposit successful",
+            `${result.message || "Funds deposited successfully"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
+          );
+        } else {
+          console.error("Deposit failed:", result.error);
+          notify(
+            "error",
+            "Failed to deposit funds",
+            result.error || "Unknown error occurred",
+          );
+        }
+      } catch (error) {
+        console.error("Exception in handleDeposit:", error);
+        notify(
+          "error",
+          "Failed to deposit funds",
+          error instanceof Error ? error.message : "Unknown error occurred",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [wallet, notify],
+  );
+
+  // START PAYROLL
+  const handleStartPayroll = React.useCallback(
+    async () => {
+      if (!wallet) {
+        notify(
+          "error",
+          "Wallet not connected",
+          "Please connect your wallet to continue",
+        );
+        return;
+      }
+
+      // Check if company details exist (payroll initialized)
+      const companyDetails = localStorage.getItem("companyDetails");
+      if (!companyDetails) {
+        notify(
+          "error",
+          "Payroll not initialized",
+          "Please initialize payroll in Company Details first",
+        );
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const result = await contractInteraction.startPayroll(wallet);
+
+        console.log("Start Payroll Result:", result);
+
+        if (result.success) {
+          notify(
+            "success",
+            "Payroll started",
+            `${result.message || "Payroll started successfully"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
+          );
+        } else {
+          console.error("Start payroll failed:", result.error);
+          notify(
+            "error",
+            "Failed to start payroll",
+            result.error || "Unknown error occurred",
+          );
+        }
+      } catch (error) {
+        console.error("Exception in handleStartPayroll:", error);
+        notify(
+          "error",
+          "Failed to start payroll",
+          error instanceof Error ? error.message : "Unknown error occurred",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [wallet, notify],
+  );
+
   // handler to change the file
   const handleFileChange = React.useCallback((file: File | null) => {
     setFile(file);
@@ -211,6 +326,8 @@ export default function DashboardPage() {
             <AdminContent
               onHandleAddWorker={handleAddWorkerToPayroll}
               onHandleSaveCompanyDetails={handleSaveCompanyDetails}
+              onHandleDeposit={handleDeposit}
+              onHandleStartPayroll={handleStartPayroll}
               onFileChange={handleFileChange}
               employees={employees}
               onAddWorker={handleAddWorker}
@@ -221,14 +338,9 @@ export default function DashboardPage() {
         )}
 
         {role === "worker" && (
-          <div className="flex flex-col items-center justify-center w-full min-h-[80vh] text-center gap-6 px-4">
-            <h1 className="text-[48px] font-bold leading-none text-aerospace text-white">
-              GOOD LUCK!
-            </h1>
-            <p className="text-[16px] text-aerospace text-white/70 max-w-xl leading-relaxed">
-              THIS DASHBOARD IS CURRENTLY ONLY FOR COMPANY OWNERS AND ADMINS TO
-              SET UP PAYROLL. WORKER FEATURES WILL BE AVAILABLE SOON.
-            </p>
+          <div className="flex w-full">
+            <WorkerSidebar />
+            <WorkerContent isLoading={isLoading} />
           </div>
         )}
       </main>

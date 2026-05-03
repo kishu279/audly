@@ -16,7 +16,6 @@ export interface CompanyDetails {
   name: string;
   registrationNumber: string;
   totalAmount: number;
-  symbol: string;
   mintAddress: string;
   frequency: string;
 }

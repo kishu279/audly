@@ -1,5 +1,5 @@
 {
-  "address": "FDpSViATq55MX9CFmw8aYbntSCYSeB3p2UAaW3LohEYj",
+  "address": "CmajLsGp9XG8jh4bbxka6ApKifWsEoWNJECzK9AD91Ja",
   "metadata": {
     "name": "auddly",
     "version": "0.1.0",
@@ -88,7 +88,55 @@
         108,
         210
       ],
-      "accounts": [],
+      "accounts": [
+        {
+          "name": "payroll",
+          "relations": [
+            "employee"
+          ]
+        },
+        {
+          "name": "employee",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payroll"
+              }
+            ]
+          }
+        },
+        {
+          "name": "employee_token_account",
+          "writable": true
+        },
+        {
+          "name": "wallet",
+          "signer": true,
+          "relations": [
+            "employee"
+          ]
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
       "args": []
     },
     {
@@ -103,8 +151,39 @@
         242,
         182
       ],
-      "accounts": [],
-      "args": []
+      "accounts": [
+        {
+          "name": "payroll"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "payroll"
+          ]
+        },
+        {
+          "name": "employer_token_account",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "payroll"
+          ]
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "initialize_payroll",
@@ -198,10 +277,6 @@
               "name": "Frequency"
             }
           }
-        },
-        {
-          "name": "symbol",
-          "type": "string"
         }
       ]
     },
@@ -217,7 +292,25 @@
         48,
         146
       ],
-      "accounts": [],
+      "accounts": [
+        {
+          "name": "payroll",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "payroll"
+          ]
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "payroll"
+          ]
+        }
+      ],
       "args": []
     }
   ],
@@ -418,6 +511,11 @@
       "name": "EMPLOYEE_SEED",
       "type": "bytes",
       "value": "[101, 109, 112, 108, 111, 121, 101, 101]"
+    },
+    {
+      "name": "MINT_ADDRESS",
+      "type": "pubkey",
+      "value": "5VuMUWoowHHFVwvnAPiS1nRd9vmdEFaVHwoy944b3KPC"
     },
     {
       "name": "PAYROLL_SEED",

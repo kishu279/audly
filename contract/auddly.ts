@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/auddly.json`.
  */
 export type Auddly = {
-  "address": "FDpSViATq55MX9CFmw8aYbntSCYSeB3p2UAaW3LohEYj",
+  "address": "CmajLsGp9XG8jh4bbxka6ApKifWsEoWNJECzK9AD91Ja",
   "metadata": {
     "name": "auddly",
     "version": "0.1.0",
@@ -94,7 +94,55 @@ export type Auddly = {
         108,
         210
       ],
-      "accounts": [],
+      "accounts": [
+        {
+          "name": "payroll",
+          "relations": [
+            "employee"
+          ]
+        },
+        {
+          "name": "employee",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payroll"
+              }
+            ]
+          }
+        },
+        {
+          "name": "employeeTokenAccount",
+          "writable": true
+        },
+        {
+          "name": "wallet",
+          "signer": true,
+          "relations": [
+            "employee"
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
       "args": []
     },
     {
@@ -109,8 +157,39 @@ export type Auddly = {
         242,
         182
       ],
-      "accounts": [],
-      "args": []
+      "accounts": [
+        {
+          "name": "payroll"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "payroll"
+          ]
+        },
+        {
+          "name": "employerTokenAccount",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "payroll"
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "initializePayroll",
@@ -204,10 +283,6 @@ export type Auddly = {
               "name": "frequency"
             }
           }
-        },
-        {
-          "name": "symbol",
-          "type": "string"
         }
       ]
     },
@@ -223,7 +298,25 @@ export type Auddly = {
         48,
         146
       ],
-      "accounts": [],
+      "accounts": [
+        {
+          "name": "payroll",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "payroll"
+          ]
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "payroll"
+          ]
+        }
+      ],
       "args": []
     }
   ],
@@ -424,6 +517,11 @@ export type Auddly = {
       "name": "employeeSeed",
       "type": "bytes",
       "value": "[101, 109, 112, 108, 111, 121, 101, 101]"
+    },
+    {
+      "name": "mintAddress",
+      "type": "pubkey",
+      "value": "5VuMUWoowHHFVwvnAPiS1nRd9vmdEFaVHwoy944b3KPC"
     },
     {
       "name": "payrollSeed",

@@ -45,7 +45,19 @@ export function DashboardSidebar() {
                     activeTab === "company_details" ? "bg-white/10 text-white" : "text-white/70"
                   }`}
                 >
-                  ADD COMPANY DETAILS
+                  COMPANY DETAILS
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={activeTab === "deposit"}
+                  onClick={() => setActiveTab("deposit")}
+                  className={`text-aerospace-nav text-body hover:bg-white/10 hover:text-white transition-colors ${
+                    activeTab === "deposit" ? "bg-white/10 text-white" : "text-white/70"
+                  }`}
+                >
+                  DEPOSIT
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
@@ -85,18 +97,6 @@ export function DashboardSidebar() {
                     </SidebarMenuSubItem>
                   </SidebarMenuSub>
                 )}
-              </SidebarMenuItem>
-
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  isActive={activeTab === "salary_status"}
-                  onClick={() => setActiveTab("salary_status")}
-                  className={`text-aerospace-nav text-body hover:bg-white/10 hover:text-white transition-colors ${
-                    activeTab === "salary_status" ? "bg-white/10 text-white" : "text-white/70"
-                  }`}
-                >
-                  SALARY STATUS
-                </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
