@@ -520,8 +520,8 @@ class ContractInteraction {
       const currentTime = Math.floor(Date.now() / 1000);
       const startTime = payrollAccount.startTime.toNumber();
       const frequency = payrollAccount.frequency;
-      // const freqSecs = "weekly" in frequency ? 7 * 86400 : 60 // testing ;
-      const freqSecs = "weekly" in frequency ? 7 * 86400 : 30 * 86400;
+      const freqSecs = "weekly" in frequency ? 7 * 86400 : 60 * 5; // 2 min testing 
+      // const freqSecs = "weekly" in frequency ? 7 * 86400 : 30 * 86400;
       const periodsPassed = Math.floor((currentTime - startTime) / freqSecs);
       const vested = periodsPassed * employeeAccount.amount.toNumber();
       const claimable = vested - employeeAccount.claimed.toNumber();
