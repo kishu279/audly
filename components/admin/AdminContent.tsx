@@ -24,6 +24,7 @@ interface AdminContentProps {
   onHandleAddWorker: (employee: Employee[]) => void;
   onHandleDeposit: (amount: number) => void;
   onHandleStartPayroll: () => void;
+  onHandleDebugState: () => void;
   isLoading: boolean;
 }
 
@@ -58,6 +59,7 @@ export function AdminContent({
   onHandleAddWorker,
   onHandleDeposit,
   onHandleStartPayroll,
+  onHandleDebugState,
   isLoading,
 }: AdminContentProps) {
   const { activeTab, companyDetails, setCompanyDetails } = useAdminStore();
@@ -403,6 +405,13 @@ export function AdminContent({
             <p className="text-aerospace text-white/70 text-md">
               [ TRANSACTIONS STATUS PLACEHOLDER ]
             </p>
+            <button
+              onClick={onHandleDebugState}
+              disabled={isLoading}
+              className="mt-3 text-body font-bold text-aerospace-nav text-white bg-blue-600 border border-blue-500 rounded-[32px] px-[18px] py-[11px] hover:bg-blue-700 transition-all self-start disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "DEBUGGING..." : "DEBUG BLOCKCHAIN STATE"}
+            </button>
           </div>
         );
 

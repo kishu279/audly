@@ -10,8 +10,12 @@ interface WorkerContentProps {
   fetchedCompanyDetails: any;
   isLoadingEmployeeDetails: boolean;
   isLoadingCompanyDetails: boolean;
+  claimEligibility: any;
+  isCheckingEligibility: boolean;
   onGetEmployeeDetails: () => void;
   onGetCompanyDetails: () => void;
+  onCheckClaimEligibility: () => void;
+  onClaimPayment: () => void;
 }
 
 export function WorkerContent({ 
@@ -20,8 +24,12 @@ export function WorkerContent({
   fetchedCompanyDetails,
   isLoadingEmployeeDetails,
   isLoadingCompanyDetails,
+  claimEligibility,
+  isCheckingEligibility,
   onGetEmployeeDetails,
   onGetCompanyDetails,
+  onCheckClaimEligibility,
+  onClaimPayment,
 }: WorkerContentProps) {
   const { activeTab } = useAdminStore();
   const [adminPubkey, setAdminPubkey] = React.useState<string | null>(null);
@@ -52,6 +60,12 @@ export function WorkerContent({
     }
   }, [activeTab, adminPubkey, onGetCompanyDetails]);
 
+  React.useEffect(() => {
+    if (activeTab === "payment" && adminPubkey) {
+      onCheckClaimEligibility();
+    }
+  }, [activeTab, adminPubkey, onCheckClaimEligibility]);
+
   const renderContent = () => {
     switch (activeTab) {
       case "payment":
@@ -77,6 +91,43 @@ export function WorkerContent({
               PAYMENT
             </h1>
             
+            {isCheckingEligibility ? (
+              <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
+                <p className="text-aerospace text-white/70 text-md">
+                  Checking claim eligibility...
+                </p>
+              </div>
+            ) : claimEligibility ? (
+              <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
+                <div className="grid gap-5">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-aerospace text-white/50 text-label">
+                      CLAIM STATUS
+                    </label>
+                    <p className={`text-aerospace text-md font-bold ${
+                      claimEligibility.eligible ? "text-green-400" : "text-yellow-400"
+                    }`}>
+                      {claimEligibility.eligible ? "ELIGIBLE TO CLAIM" : "NOT YET ELIGIBLE"}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-aerospace text-white/50 text-label">
+                      NEXT CLAIM TIME
+                    </label>
+                    <p className="text-aerospace text-white text-md">
+                      {claimEligibility.nextClaimDate}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
+                <p className="text-aerospace text-white/70 text-md">
+                  Unable to check claim eligibility. Please ensure you are added to the payroll.
+                </p>
+              </div>
+            )}
+
             <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
               <h2 className="text-aerospace text-white text-lg font-bold mb-4">
                 PAYMENT POLICY
@@ -98,7 +149,8 @@ export function WorkerContent({
             </div>
 
             <button
-              disabled={isLoading}
+              onClick={onClaimPayment}
+              disabled={isLoading || !claimEligibility?.eligible}
               className="mt-3 text-body font-bold text-aerospace-nav text-white bg-ghost border border-ghost-border rounded-[32px] px-[18px] py-[11px] hover:bg-white/20 hover:text-white-100 transition-all self-start disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "CLAIMING..." : "CLAIM PAYMENT"}
@@ -258,6 +310,17 @@ export function WorkerContent({
   return (
     <div className="flex-1 px-8 py-8 min-h-screen relative">
       {renderContent()}
+      
+      {/* Clear employee data button */}
+      <button
+        onClick={() => {
+          localStorage.removeItem("adminPubkey");
+          window.location.reload();
+        }}
+        className="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-md transition-all"
+      >
+        CLEAR EMPLOYEE DATA
+      </button>
     </div>
   );
 }

@@ -13,10 +13,12 @@ import { CompanyDetails, Employee, Frequency } from "@/lib/types";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { contractInteraction } from "@/lib/contract-interaction";
 import { useNotificationStore } from "@/stores/useNotificationStore";
+import { PublicKey } from "@solana/web3.js";
+import idl from "@/contract/auddly.json";
 
 export default function DashboardPage() {
   const wallet = useAnchorWallet();
-  const { role } = useAdminStore();
+  const { role, setCompanyDetails } = useAdminStore();
   const { notify } = useNotificationStore();
   const [file, setFile] = React.useState<File | null>(null);
   const [employees, setEmployees] = React.useState<Employee[]>([]);
@@ -25,6 +27,8 @@ export default function DashboardPage() {
   const [fetchedCompanyDetails, setFetchedCompanyDetails] = React.useState<any>(null);
   const [isLoadingEmployeeDetails, setIsLoadingEmployeeDetails] = React.useState(false);
   const [isLoadingCompanyDetails, setIsLoadingCompanyDetails] = React.useState(false);
+  const [claimEligibility, setClaimEligibility] = React.useState<any>(null);
+  const [isCheckingEligibility, setIsCheckingEligibility] = React.useState(false);
 
   // SAVING THE COMPANY DETAILS AND INITIALIZING THE PAYROLL ON THE SOLANA BLOCKCHAIN
   const handleSaveCompanyDetails = React.useCallback(
@@ -261,15 +265,60 @@ export default function DashboardPage() {
     [wallet, notify],
   );
 
+  // DEBUG ADMIN STATE
+  const handleDebugAdminState = React.useCallback(
+    async () => {
+      if (!wallet) {
+        notify(
+          "error",
+          "Wallet not connected",
+          "Please connect your wallet to continue",
+        );
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const result = await contractInteraction.debugAdminState(wallet);
+
+        if (result.success) {
+          notify(
+            "success",
+            "Debug complete",
+            "Check console for blockchain state details",
+          );
+        } else {
+          notify(
+            "error",
+            "Debug failed",
+            result.error || "Unknown error occurred",
+          );
+        }
+      } catch (error) {
+        console.error("Exception in handleDebugAdminState:", error);
+        notify(
+          "error",
+          "Debug failed",
+          error instanceof Error ? error.message : "Unknown error occurred",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [wallet, notify],
+  );
+
   // GET EMPLOYEE DETAILS
   const handleGetEmployeeDetails = React.useCallback(
     async () => {
       if (!wallet) {
+        console.log("[Employee Details] Wallet not connected");
         return;
       }
 
       const adminPubkey = localStorage.getItem("adminPubkey");
       if (!adminPubkey) {
+        console.log("[Employee Details] Admin pubkey not found in localStorage");
         notify(
           "error",
           "Admin wallet not set",
@@ -278,20 +327,25 @@ export default function DashboardPage() {
         return;
       }
 
+      console.log("[Employee Details] Starting fetch...");
+      console.log("[Employee Details] Employee Wallet:", wallet.publicKey.toBase58());
+      console.log("[Employee Details] Admin Pubkey:", adminPubkey);
+
       setIsLoadingEmployeeDetails(true);
       try {
         const result = await contractInteraction.getEmployeeDetails(wallet, adminPubkey);
 
-        console.log("Employee Details Result:", result);
+        console.log("[Employee Details] Result:", result);
 
         if (result.success) {
+          console.log("[Employee Details] ✅ Success - Data:", result.data);
           setEmployeeDetails(result.data);
         } else {
-          console.log("No employee details found:", result.error);
+          console.log("[Employee Details] ❌ Failed:", result.error);
           setEmployeeDetails(null);
         }
       } catch (error) {
-        console.error("Exception in handleGetEmployeeDetails:", error);
+        console.error("[Employee Details] Exception:", error);
         setEmployeeDetails(null);
       } finally {
         setIsLoadingEmployeeDetails(false);
@@ -304,11 +358,13 @@ export default function DashboardPage() {
   const handleGetCompanyDetails = React.useCallback(
     async () => {
       if (!wallet) {
+        console.log("[Company Details] Wallet not connected");
         return;
       }
 
       const adminPubkey = localStorage.getItem("adminPubkey");
       if (!adminPubkey) {
+        console.log("[Company Details] Admin pubkey not found in localStorage");
         notify(
           "error",
           "Admin wallet not set",
@@ -317,26 +373,151 @@ export default function DashboardPage() {
         return;
       }
 
+      console.log("[Company Details] Starting fetch...");
+      console.log("[Company Details] Admin Pubkey:", adminPubkey);
+
       setIsLoadingCompanyDetails(true);
       try {
         const result = await contractInteraction.getCompanyDetails(wallet, adminPubkey);
 
-        console.log("Company Details Result:", result);
+        console.log("[Company Details] Result:", result);
 
         if (result.success) {
+          console.log("[Company Details] ✅ Success - Data:", result.data);
           setFetchedCompanyDetails(result.data);
         } else {
-          console.log("No company details found:", result.error);
+          console.log("[Company Details] ❌ Failed:", result.error);
           setFetchedCompanyDetails(null);
         }
       } catch (error) {
-        console.error("Exception in handleGetCompanyDetails:", error);
+        console.error("[Company Details] Exception:", error);
         setFetchedCompanyDetails(null);
       } finally {
         setIsLoadingCompanyDetails(false);
       }
     },
     [wallet, notify],
+  );
+
+  // CHECK CLAIM ELIGIBILITY
+  const handleCheckClaimEligibility = React.useCallback(
+    async () => {
+      if (!wallet) {
+        console.log("[Claim Eligibility] Wallet not connected");
+        return;
+      }
+
+      const adminPubkey = localStorage.getItem("adminPubkey");
+      if (!adminPubkey) {
+        console.log("[Claim Eligibility] Admin pubkey not found in localStorage");
+        notify(
+          "error",
+          "Admin wallet not set",
+          "Please enter admin wallet address first",
+        );
+        return;
+      }
+
+      console.log("[Claim Eligibility] Starting check...");
+      console.log("[Claim Eligibility] Employee Wallet:", wallet.publicKey.toBase58());
+      console.log("[Claim Eligibility] Admin Pubkey:", adminPubkey);
+
+      setIsCheckingEligibility(true);
+      try {
+        const result = await contractInteraction.checkClaimEligibility(wallet, adminPubkey);
+
+        console.log("[Claim Eligibility] Result:", result);
+
+        if (result.success) {
+          console.log("[Claim Eligibility] ✅ Success - Data:", result.data);
+          console.log("[Claim Eligibility] Eligible:", result.data.eligible);
+          console.log("[Claim Eligibility] Next Claim Date:", result.data.nextClaimDate);
+          setClaimEligibility(result.data);
+        } else {
+          console.log("[Claim Eligibility] ❌ Failed:", result.error);
+          setClaimEligibility(null);
+        }
+      } catch (error) {
+        console.error("[Claim Eligibility] Exception:", error);
+        setClaimEligibility(null);
+      } finally {
+        setIsCheckingEligibility(false);
+      }
+    },
+    [wallet, notify],
+  );
+
+  // CLAIM PAYMENT
+  const handleClaimPayment = React.useCallback(
+    async () => {
+      if (!wallet) {
+        console.log("[Claim Payment] Wallet not connected");
+        notify(
+          "error",
+          "Wallet not connected",
+          "Please connect your wallet to continue",
+        );
+        return;
+      }
+
+      const adminPubkey = localStorage.getItem("adminPubkey");
+      if (!adminPubkey) {
+        console.log("[Claim Payment] Admin pubkey not found in localStorage");
+        notify(
+          "error",
+          "Admin wallet not set",
+          "Please enter admin wallet address first",
+        );
+        return;
+      }
+
+      console.log("\n========== CLAIM PAYMENT STARTED ==========");
+      console.log("[Claim Payment] Employee Wallet:", wallet.publicKey.toBase58());
+      console.log("[Claim Payment] Admin Pubkey:", adminPubkey);
+      console.log("[Claim Payment] Current Eligibility:", claimEligibility);
+
+      setIsLoading(true);
+      try {
+        console.log("[Claim Payment] Calling contractInteraction.claimAmount...");
+        const result = await contractInteraction.claimAmount(wallet, adminPubkey);
+
+        console.log("[Claim Payment] Result:", result);
+
+        if (result.success) {
+          console.log("[Claim Payment] ✅ SUCCESS!");
+          console.log("[Claim Payment] Transaction:", result.data?.response);
+          notify(
+            "success",
+            "Payment claimed successfully",
+            `${result.message || "Funds transferred to your wallet"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
+          );
+          
+          console.log("[Claim Payment] Refreshing employee details and eligibility...");
+          // Refresh employee details and eligibility after claim
+          await handleGetEmployeeDetails();
+          await handleCheckClaimEligibility();
+          console.log("[Claim Payment] Refresh complete");
+        } else {
+          console.error("[Claim Payment] ❌ FAILED:", result.error);
+          notify(
+            "error",
+            "Failed to claim payment",
+            result.error || "Unknown error occurred",
+          );
+        }
+      } catch (error) {
+        console.error("[Claim Payment] ❌ EXCEPTION:", error);
+        notify(
+          "error",
+          "Failed to claim payment",
+          error instanceof Error ? error.message : "Unknown error occurred",
+        );
+      } finally {
+        setIsLoading(false);
+        console.log("========== CLAIM PAYMENT ENDED ==========\n");
+      }
+    },
+    [wallet, notify, handleGetEmployeeDetails, handleCheckClaimEligibility, claimEligibility],
   );
 
   // handler to change the file
@@ -394,6 +575,35 @@ export default function DashboardPage() {
     }
   }, []);
 
+  // Load company details from localStorage and derive payroll PDA
+  React.useEffect(() => {
+    const loadedCompanyDetails = localStorage.getItem("companyDetails");
+    
+    if (loadedCompanyDetails && role === "admin") {
+      try {
+        const details = JSON.parse(loadedCompanyDetails);
+        setCompanyDetails(details);
+        
+        // Derive payroll PDA if wallet is connected
+        if (wallet?.publicKey) {
+          const programId = new PublicKey(idl.address);
+          const [payrollPda] = PublicKey.findProgramAddressSync(
+            [Buffer.from("payroll"), wallet.publicKey.toBuffer()],
+            programId,
+          );
+          
+          notify(
+            "success",
+            "Company details loaded",
+            `Payroll PDA: ${payrollPda.toBase58()}`,
+          );
+        }
+      } catch (error) {
+        console.error("Error loading company details:", error);
+      }
+    }
+  }, [wallet, role, setCompanyDetails, notify]);
+
   return (
     <>
       {/* Keeping Navbar for wallet connection */}
@@ -410,6 +620,7 @@ export default function DashboardPage() {
               onHandleSaveCompanyDetails={handleSaveCompanyDetails}
               onHandleDeposit={handleDeposit}
               onHandleStartPayroll={handleStartPayroll}
+              onHandleDebugState={handleDebugAdminState}
               onFileChange={handleFileChange}
               employees={employees}
               onAddWorker={handleAddWorker}
@@ -428,8 +639,12 @@ export default function DashboardPage() {
               fetchedCompanyDetails={fetchedCompanyDetails}
               isLoadingEmployeeDetails={isLoadingEmployeeDetails}
               isLoadingCompanyDetails={isLoadingCompanyDetails}
+              claimEligibility={claimEligibility}
+              isCheckingEligibility={isCheckingEligibility}
               onGetEmployeeDetails={handleGetEmployeeDetails}
               onGetCompanyDetails={handleGetCompanyDetails}
+              onCheckClaimEligibility={handleCheckClaimEligibility}
+              onClaimPayment={handleClaimPayment}
             />
           </div>
         )}
