@@ -121,7 +121,8 @@ class ContractInteraction {
       if (error.logs) console.error("Transaction logs:", error.logs);
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -161,12 +162,14 @@ class ContractInteraction {
         program.programId,
       );
 
-      const employeeAccountInfo = await this.connection.getAccountInfo(employeePda);
+      const employeeAccountInfo =
+        await this.connection.getAccountInfo(employeePda);
       if (employeeAccountInfo) {
         return { success: false, error: "Employee already exists in payroll" };
       }
 
-      const payrollAccount = await program.account.payrollConfig.fetch(payrollPda);
+      const payrollAccount =
+        await program.account.payrollConfig.fetch(payrollPda);
       const decimals = await this.getMintDecimals(payrollAccount.mint);
       const amountBN = this.toRaw(amount, decimals);
 
@@ -176,7 +179,10 @@ class ContractInteraction {
         tokenProgram: address(TOKEN_PROGRAM_ID.toString()),
       });
 
-      console.log("Associated Token Address:", associatedTokenAddress.toString());
+      console.log(
+        "Associated Token Address:",
+        associatedTokenAddress.toString(),
+      );
       console.log("Payroll PDA:", payrollPda.toBase58());
       console.log("Employee PDA:", employeePda.toBase58());
       console.log("Employee Wallet:", employeeWalletPubkey.toBase58());
@@ -202,7 +208,8 @@ class ContractInteraction {
       console.error("Full error:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -237,7 +244,8 @@ class ContractInteraction {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -261,7 +269,8 @@ class ContractInteraction {
         program.programId,
       );
 
-      const payrollAccount = await program.account.payrollConfig.fetch(payrollPda);
+      const payrollAccount =
+        await program.account.payrollConfig.fetch(payrollPda);
       const mintAddress = payrollAccount.mint;
       const decimals = await this.getMintDecimals(mintAddress);
       const amountBN = this.toRaw(amount, decimals);
@@ -303,7 +312,8 @@ class ContractInteraction {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -354,18 +364,11 @@ class ContractInteraction {
         employeeTokenAccountPubkey,
       );
 
-      const vaultTokenAccountPubkey = getAssociatedTokenAddressSync(
-        mintAddress,
-        vaultPda,
-        true,
-        TOKEN_PROGRAM_ID,
-      );
-
-      const vaultTokenInfo = await this.connection.getAccountInfo(
-        vaultTokenAccountPubkey,
-      );
+      const vaultTokenInfo = await this.connection.getAccountInfo(vaultPda);
       if (!vaultTokenInfo) {
-        throw new Error("Vault token account not initialized. Admin must deposit funds first.");
+        throw new Error(
+          "Vault token account not initialized. Admin must deposit funds first.",
+        );
       }
 
       const claimTx = program.methods.claim().accountsPartial({
@@ -401,7 +404,8 @@ class ContractInteraction {
       console.error("[Contract] ❌ claimAmount FAILED:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -417,13 +421,17 @@ class ContractInteraction {
         program.programId,
       );
 
-      const payrollAccount = await program.account.payrollConfig.fetch(payrollPda);
+      const payrollAccount =
+        await program.account.payrollConfig.fetch(payrollPda);
       const decimals = await this.getMintDecimals(payrollAccount.mint);
 
       return {
         success: true,
         data: {
-          totalAmount: this.toUI(payrollAccount.totalAmount.toNumber(), decimals),
+          totalAmount: this.toUI(
+            payrollAccount.totalAmount.toNumber(),
+            decimals,
+          ),
           frequency: payrollAccount.frequency,
           mint: payrollAccount.mint.toString(),
         },
@@ -431,7 +439,8 @@ class ContractInteraction {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -476,7 +485,8 @@ class ContractInteraction {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -510,6 +520,7 @@ class ContractInteraction {
       const currentTime = Math.floor(Date.now() / 1000);
       const startTime = payrollAccount.startTime.toNumber();
       const frequency = payrollAccount.frequency;
+      // const freqSecs = "weekly" in frequency ? 7 * 86400 : 60 // testing ;
       const freqSecs = "weekly" in frequency ? 7 * 86400 : 30 * 86400;
       const periodsPassed = Math.floor((currentTime - startTime) / freqSecs);
       const vested = periodsPassed * employeeAccount.amount.toNumber();
@@ -529,7 +540,8 @@ class ContractInteraction {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -552,19 +564,28 @@ class ContractInteraction {
       );
       console.log("\n[DEBUG] Payroll PDA:", payrollPda.toBase58());
 
-      const payrollAccount = await program.account.payrollConfig.fetch(payrollPda);
+      const payrollAccount =
+        await program.account.payrollConfig.fetch(payrollPda);
       const decimals = await this.getMintDecimals(payrollAccount.mint);
 
       console.log("\n[DEBUG] ===== PAYROLL CONFIG =====");
       console.log("  Authority:", payrollAccount.authority.toBase58());
       console.log("  Mint:", payrollAccount.mint.toBase58());
-      console.log("  Total Amount (UI):", this.toUI(payrollAccount.totalAmount.toNumber(), decimals));
+      console.log(
+        "  Total Amount (UI):",
+        this.toUI(payrollAccount.totalAmount.toNumber(), decimals),
+      );
       console.log("  Frequency:", payrollAccount.frequency);
       const startTime =
         typeof payrollAccount.startTime === "number"
           ? payrollAccount.startTime
           : payrollAccount.startTime.toNumber();
-      console.log("  Start Time:", startTime === 0 ? "Not started" : new Date(startTime * 1000).toLocaleString());
+      console.log(
+        "  Start Time:",
+        startTime === 0
+          ? "Not started"
+          : new Date(startTime * 1000).toLocaleString(),
+      );
       console.log("  Employee Count:", payrollAccount.employeeCount.toString());
 
       const [vaultPda] = PublicKey.findProgramAddressSync(
@@ -578,7 +599,8 @@ class ContractInteraction {
       if (vaultTokenAccount) {
         console.log("  Account Exists: YES");
         try {
-          const balance = await this.connection.getTokenAccountBalance(vaultPda);
+          const balance =
+            await this.connection.getTokenAccountBalance(vaultPda);
           console.log("  Balance (UI):", balance.value.uiAmount);
           console.log("  Balance (Raw):", balance.value.amount);
           console.log("  Decimals:", balance.value.decimals);
@@ -605,9 +627,20 @@ class ContractInteraction {
           console.log(`\n  [Employee ${idx + 1}]`);
           console.log("    PDA:", emp.publicKey.toBase58());
           console.log("    Wallet:", emp.account.wallet.toBase58());
-          console.log("    Amount (UI):", this.toUI(emp.account.amount.toNumber(), decimals));
-          console.log("    Claimed (UI):", this.toUI(emp.account.claimed.toNumber(), decimals));
-          console.log("    Last Claim Date:", new Date(emp.account.lastClaimTime.toNumber() * 1000).toLocaleString());
+          console.log(
+            "    Amount (UI):",
+            this.toUI(emp.account.amount.toNumber(), decimals),
+          );
+          console.log(
+            "    Claimed (UI):",
+            this.toUI(emp.account.claimed.toNumber(), decimals),
+          );
+          console.log(
+            "    Last Claim Date:",
+            new Date(
+              emp.account.lastClaimTime.toNumber() * 1000,
+            ).toLocaleString(),
+          );
         }
       } else {
         console.log("  No employees added yet");
