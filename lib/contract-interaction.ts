@@ -417,12 +417,14 @@ class ContractInteraction {
   }
 
   /// Company details
-  async getCompanyDetails(wallet: AnchorWallet) {
+  async getCompanyDetails(wallet: AnchorWallet, adminPubkey: string) {
     const program = this.getProgram(wallet);
     try {
-      // deriving the payroll pda from the company admin wallet address and the "payroll" seed
+      const adminPublicKey = new PublicKey(adminPubkey);
+      
+      // deriving the payroll pda from the admin wallet address and the "payroll" seed
       const [payrollPda] = PublicKey.findProgramAddressSync(
-        [Buffer.from("payroll"), wallet.publicKey.toBuffer()],
+        [Buffer.from("payroll"), adminPublicKey.toBuffer()],
         program.programId,
       );
 
@@ -447,12 +449,14 @@ class ContractInteraction {
   }
 
   /// Employee details
-  async getEmployeeDetails(wallet: AnchorWallet) {
+  async getEmployeeDetails(wallet: AnchorWallet, adminPubkey: string) {
     const program = this.getProgram(wallet);
     try {
-      // deriving the payroll pda from the company admin wallet address and the "payroll" seed
+      const adminPublicKey = new PublicKey(adminPubkey);
+      
+      // deriving the payroll pda from the admin wallet address and the "payroll" seed
       const [payrollPda] = PublicKey.findProgramAddressSync(
-        [Buffer.from("payroll"), wallet.publicKey.toBuffer()],
+        [Buffer.from("payroll"), adminPublicKey.toBuffer()],
         program.programId,
       );
 
@@ -467,14 +471,14 @@ class ContractInteraction {
       );
 
       const employeeAccount =
-        await program.account.employeeRecordw.fetch(employeePda);
+        await program.account.employeeRecord.fetch(employeePda);
 
       return {
         success: true,
         data: {
           amount: employeeAccount.amount.toString(),
           lastClaimed: new Date(
-            employeeAccount.lastClaimed.toNumber() * 1000,
+            employeeAccount.lastClaimTime.toNumber() * 1000,
           ).toLocaleString(),
         },
       };

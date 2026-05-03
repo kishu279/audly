@@ -1,18 +1,73 @@
 "use client";
 
 import { useAdminStore } from "@/stores/useAdminStore";
+import { AdminPubkeyInput } from "./AdminPubkeyInput";
 import React from "react";
 
 interface WorkerContentProps {
   isLoading: boolean;
+  employeeDetails: any;
+  fetchedCompanyDetails: any;
+  isLoadingEmployeeDetails: boolean;
+  isLoadingCompanyDetails: boolean;
+  onGetEmployeeDetails: () => void;
+  onGetCompanyDetails: () => void;
 }
 
-export function WorkerContent({ isLoading }: WorkerContentProps) {
-  const { activeTab, companyDetails } = useAdminStore();
+export function WorkerContent({ 
+  isLoading,
+  employeeDetails,
+  fetchedCompanyDetails,
+  isLoadingEmployeeDetails,
+  isLoadingCompanyDetails,
+  onGetEmployeeDetails,
+  onGetCompanyDetails,
+}: WorkerContentProps) {
+  const { activeTab } = useAdminStore();
+  const [adminPubkey, setAdminPubkey] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const stored = localStorage.getItem("adminPubkey");
+    setAdminPubkey(stored);
+    
+    const interval = setInterval(() => {
+      const current = localStorage.getItem("adminPubkey");
+      if (current !== adminPubkey) {
+        setAdminPubkey(current);
+      }
+    }, 500);
+    
+    return () => clearInterval(interval);
+  }, [adminPubkey]);
+
+  React.useEffect(() => {
+    if (activeTab === "details" && adminPubkey) {
+      onGetEmployeeDetails();
+    }
+  }, [activeTab, adminPubkey, onGetEmployeeDetails]);
+
+  React.useEffect(() => {
+    if (activeTab === "worker_company_details" && adminPubkey) {
+      onGetCompanyDetails();
+    }
+  }, [activeTab, adminPubkey, onGetCompanyDetails]);
 
   const renderContent = () => {
     switch (activeTab) {
       case "payment":
+        if (!adminPubkey) {
+          return (
+            <div className="flex flex-col gap-6">
+              <h1
+                className="text-section-heading font-bold text-aerospace text-white"
+                style={{ lineHeight: "var(--leading-tight)" }}
+              >
+                PAYMENT
+              </h1>
+              <AdminPubkeyInput />
+            </div>
+          );
+        }
         return (
           <div className="flex flex-col gap-6">
             <h1
@@ -52,6 +107,19 @@ export function WorkerContent({ isLoading }: WorkerContentProps) {
         );
 
       case "details":
+        if (!adminPubkey) {
+          return (
+            <div className="flex flex-col gap-6">
+              <h1
+                className="text-section-heading font-bold text-aerospace text-white"
+                style={{ lineHeight: "var(--leading-tight)" }}
+              >
+                EMPLOYEE DETAILS
+              </h1>
+              <AdminPubkeyInput />
+            </div>
+          );
+        }
         return (
           <div className="flex flex-col gap-6">
             <h1
@@ -61,38 +129,73 @@ export function WorkerContent({ isLoading }: WorkerContentProps) {
               EMPLOYEE DETAILS
             </h1>
             
-            <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
-              <div className="grid gap-5">
-                <div className="flex flex-col gap-1">
-                  <label className="text-aerospace text-white/50 text-label">
-                    EMPLOYEE TYPE
-                  </label>
-                  <p className="text-aerospace text-white text-md">
-                    Full-Time Employee
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-aerospace text-white/50 text-label">
-                    STATUS
-                  </label>
-                  <p className="text-aerospace text-white text-md">
-                    Active
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-aerospace text-white/50 text-label">
-                    PAYMENT FREQUENCY
-                  </label>
-                  <p className="text-aerospace text-white text-md">
-                    {companyDetails?.frequency || "Not Set"}
-                  </p>
+            {isLoadingEmployeeDetails ? (
+              <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
+                <p className="text-aerospace text-white/70 text-md">
+                  Loading employee details...
+                </p>
+              </div>
+            ) : employeeDetails ? (
+              <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
+                <div className="grid gap-5">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-aerospace text-white/50 text-label">
+                      EMPLOYEE TYPE
+                    </label>
+                    <p className="text-aerospace text-white text-md">
+                      Full-Time Employee
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-aerospace text-white/50 text-label">
+                      SALARY AMOUNT
+                    </label>
+                    <p className="text-aerospace text-white text-md">
+                      {employeeDetails.amount}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-aerospace text-white/50 text-label">
+                      LAST CLAIMED
+                    </label>
+                    <p className="text-aerospace text-white text-md">
+                      {employeeDetails.lastClaimed}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-aerospace text-white/50 text-label">
+                      STATUS
+                    </label>
+                    <p className="text-aerospace text-white text-md">
+                      Active
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
+                <p className="text-aerospace text-white/70 text-md">
+                  No active employee record found. Please contact your administrator.
+                </p>
+              </div>
+            )}
           </div>
         );
 
       case "worker_company_details":
+        if (!adminPubkey) {
+          return (
+            <div className="flex flex-col gap-6">
+              <h1
+                className="text-section-heading font-bold text-aerospace text-white"
+                style={{ lineHeight: "var(--leading-tight)" }}
+              >
+                COMPANY DETAILS
+              </h1>
+              <AdminPubkeyInput />
+            </div>
+          );
+        }
         return (
           <div className="flex flex-col gap-6">
             <h1
@@ -102,23 +205,29 @@ export function WorkerContent({ isLoading }: WorkerContentProps) {
               COMPANY DETAILS
             </h1>
             
-            {companyDetails ? (
+            {isLoadingCompanyDetails ? (
+              <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
+                <p className="text-aerospace text-white/70 text-md">
+                  Loading company details...
+                </p>
+              </div>
+            ) : fetchedCompanyDetails ? (
               <div className="border border-white/20 p-6 rounded-xl bg-white/5 max-w-2xl">
                 <div className="grid gap-5">
                   <div className="flex flex-col gap-1">
                     <label className="text-aerospace text-white/50 text-label">
-                      COMPANY NAME
+                      TOTAL AMOUNT
                     </label>
                     <p className="text-aerospace text-white text-md">
-                      {companyDetails.name}
+                      {fetchedCompanyDetails.totalAmount}
                     </p>
                   </div>
                   <div className="flex flex-col gap-1">
                     <label className="text-aerospace text-white/50 text-label">
-                      REGISTRATION NUMBER
+                      MINT ADDRESS
                     </label>
-                    <p className="text-aerospace text-white text-md">
-                      {companyDetails.registrationNumber}
+                    <p className="text-aerospace text-white text-md break-all">
+                      {fetchedCompanyDetails.mint}
                     </p>
                   </div>
                   <div className="flex flex-col gap-1">
@@ -126,7 +235,7 @@ export function WorkerContent({ isLoading }: WorkerContentProps) {
                       PAYMENT FREQUENCY
                     </label>
                     <p className="text-aerospace text-white text-md">
-                      {companyDetails.frequency}
+                      {JSON.stringify(fetchedCompanyDetails.frequency)}
                     </p>
                   </div>
                 </div>

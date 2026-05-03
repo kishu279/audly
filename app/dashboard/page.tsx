@@ -21,6 +21,10 @@ export default function DashboardPage() {
   const [file, setFile] = React.useState<File | null>(null);
   const [employees, setEmployees] = React.useState<Employee[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [employeeDetails, setEmployeeDetails] = React.useState<any>(null);
+  const [fetchedCompanyDetails, setFetchedCompanyDetails] = React.useState<any>(null);
+  const [isLoadingEmployeeDetails, setIsLoadingEmployeeDetails] = React.useState(false);
+  const [isLoadingCompanyDetails, setIsLoadingCompanyDetails] = React.useState(false);
 
   // SAVING THE COMPANY DETAILS AND INITIALIZING THE PAYROLL ON THE SOLANA BLOCKCHAIN
   const handleSaveCompanyDetails = React.useCallback(
@@ -257,6 +261,84 @@ export default function DashboardPage() {
     [wallet, notify],
   );
 
+  // GET EMPLOYEE DETAILS
+  const handleGetEmployeeDetails = React.useCallback(
+    async () => {
+      if (!wallet) {
+        return;
+      }
+
+      const adminPubkey = localStorage.getItem("adminPubkey");
+      if (!adminPubkey) {
+        notify(
+          "error",
+          "Admin wallet not set",
+          "Please enter admin wallet address first",
+        );
+        return;
+      }
+
+      setIsLoadingEmployeeDetails(true);
+      try {
+        const result = await contractInteraction.getEmployeeDetails(wallet, adminPubkey);
+
+        console.log("Employee Details Result:", result);
+
+        if (result.success) {
+          setEmployeeDetails(result.data);
+        } else {
+          console.log("No employee details found:", result.error);
+          setEmployeeDetails(null);
+        }
+      } catch (error) {
+        console.error("Exception in handleGetEmployeeDetails:", error);
+        setEmployeeDetails(null);
+      } finally {
+        setIsLoadingEmployeeDetails(false);
+      }
+    },
+    [wallet, notify],
+  );
+
+  // GET COMPANY DETAILS
+  const handleGetCompanyDetails = React.useCallback(
+    async () => {
+      if (!wallet) {
+        return;
+      }
+
+      const adminPubkey = localStorage.getItem("adminPubkey");
+      if (!adminPubkey) {
+        notify(
+          "error",
+          "Admin wallet not set",
+          "Please enter admin wallet address first",
+        );
+        return;
+      }
+
+      setIsLoadingCompanyDetails(true);
+      try {
+        const result = await contractInteraction.getCompanyDetails(wallet, adminPubkey);
+
+        console.log("Company Details Result:", result);
+
+        if (result.success) {
+          setFetchedCompanyDetails(result.data);
+        } else {
+          console.log("No company details found:", result.error);
+          setFetchedCompanyDetails(null);
+        }
+      } catch (error) {
+        console.error("Exception in handleGetCompanyDetails:", error);
+        setFetchedCompanyDetails(null);
+      } finally {
+        setIsLoadingCompanyDetails(false);
+      }
+    },
+    [wallet, notify],
+  );
+
   // handler to change the file
   const handleFileChange = React.useCallback((file: File | null) => {
     setFile(file);
@@ -340,7 +422,15 @@ export default function DashboardPage() {
         {role === "worker" && (
           <div className="flex w-full">
             <WorkerSidebar />
-            <WorkerContent isLoading={isLoading} />
+            <WorkerContent 
+              isLoading={isLoading}
+              employeeDetails={employeeDetails}
+              fetchedCompanyDetails={fetchedCompanyDetails}
+              isLoadingEmployeeDetails={isLoadingEmployeeDetails}
+              isLoadingCompanyDetails={isLoadingCompanyDetails}
+              onGetEmployeeDetails={handleGetEmployeeDetails}
+              onGetCompanyDetails={handleGetCompanyDetails}
+            />
           </div>
         )}
       </main>
