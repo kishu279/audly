@@ -9,7 +9,7 @@ export function Navbar() {
   const { setVisible } = useWalletModal();
 
   return (
-    <nav className="fixed top-0 w-full z-50 py-6 px-8 backdrop:blur-md bg-black/30 border-b border-white/20 shadow-lg">
+    <nav className="fixed top-10 left-1/2 -translate-x-1/2 max-w-5/6 w-full z-50 py-4 px-8 backdrop:blur-lg bg-black/30 border border-white/20 shadow-lg rounded-4xl">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="text-2xl font-bold text-aerospace-nav text-white">
           Audly
