@@ -428,7 +428,7 @@ export default function DashboardPage() {
 
         console.log("[Claim Eligibility] Result:", result);
 
-        if (result.success) {
+        if (result.success && result.data) {
           console.log("[Claim Eligibility] ✅ Success - Data:", result.data);
           console.log("[Claim Eligibility] Eligible:", result.data.eligible);
           console.log("[Claim Eligibility] Next Claim Date:", result.data.nextClaimDate);

@@ -36,7 +36,18 @@ class ContractInteraction {
   }
 
   private toRaw(amount: number, decimals: number): BN {
-    return new BN(amount * Math.pow(10, decimals));
+    const multiplier = Math.pow(10, decimals);
+    const rawAmount = amount * multiplier;
+    
+    // Check for overflow
+    if (!Number.isSafeInteger(rawAmount)) {
+      throw new Error(
+        `Amount ${amount} with ${decimals} decimals exceeds safe integer range. ` +
+        `Please use a smaller amount or check your decimals.`
+      );
+    }
+    
+    return new BN(Math.floor(rawAmount));
   }
 
   private toUI(raw: number, decimals: number): string {
@@ -64,6 +75,7 @@ class ContractInteraction {
     const program = this.getProgram(wallet);
     const mintAddressPubkey = new PublicKey(mintAddress);
     const decimals = await this.getMintDecimals(mintAddressPubkey);
+    console.log("Mint decimals:", decimals);
     const totalAmountBN = this.toRaw(totalAmount, decimals);
     const frequencyEnum =
       frequency === Frequency.Weekly ? { weekly: {} } : { monthly: {} };
@@ -520,7 +532,7 @@ class ContractInteraction {
       const currentTime = Math.floor(Date.now() / 1000);
       const startTime = payrollAccount.startTime.toNumber();
       const frequency = payrollAccount.frequency;
-      const freqSecs = "weekly" in frequency ? 7 * 86400 : 60 * 5; // 2 min testing 
+      const freqSecs = "weekly" in frequency ? 7 * 86400 : 60 * 2; // 2 min testing 
       // const freqSecs = "weekly" in frequency ? 7 * 86400 : 30 * 86400;
       const periodsPassed = Math.floor((currentTime - startTime) / freqSecs);
       const vested = periodsPassed * employeeAccount.amount.toNumber();
@@ -615,7 +627,7 @@ class ContractInteraction {
       const employeeCount =
         typeof payrollAccount.employeeCount === "number"
           ? payrollAccount.employeeCount
-          : payrollAccount.employeeCount.toNumber();
+          : (payrollAccount.employeeCount as any).toNumber();
       console.log("  Total Employees:", employeeCount);
 
       if (employeeCount > 0) {

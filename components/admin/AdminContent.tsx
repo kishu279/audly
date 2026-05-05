@@ -192,10 +192,14 @@ export function AdminContent({
                 <input
                   name="totalAmount"
                   type="number"
+                  step="any"
                   required
                   className="bg-transparent border border-white/20 rounded-md px-4 py-3 text-white focus:outline-none focus:border-white/50 text-aerospace text-body"
-                  placeholder="E.G. 1000000"
+                  placeholder="E.G. 1000 (UI FORMAT)"
                 />
+                <p className="text-xs text-white/50 text-aerospace">
+                  ENTER AMOUNT IN UI FORMAT (E.G. 1000 FOR 1000 TOKENS, NOT LAMPORTS)
+                </p>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-aerospace text-white/70 text-body">
@@ -375,11 +379,15 @@ export function AdminContent({
                 <input
                   name="depositAmount"
                   type="number"
+                  step="any"
                   required
-                  min="1"
+                  min="0.000001"
                   className="bg-transparent border border-white/20 rounded-md px-4 py-3 text-white focus:outline-none focus:border-white/50 text-aerospace text-body"
-                  placeholder="E.G. 50000"
+                  placeholder="E.G. 500 (UI FORMAT)"
                 />
+                <p className="text-xs text-white/50 text-aerospace">
+                  ENTER AMOUNT IN UI FORMAT (E.G. 500 FOR 500 TOKENS, NOT LAMPORTS)
+                </p>
               </div>
 
               <button

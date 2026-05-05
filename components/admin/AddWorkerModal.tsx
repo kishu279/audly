@@ -64,15 +64,20 @@ export function AddWorkerModal({ onAddWorker }: AddWorkerModalProps) {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="amount">Amount *</FieldLabel>
+            <FieldLabel htmlFor="amount">Amount (UI Format) *</FieldLabel>
             <Input
               id="amount"
               name="amount"
               type="number"
+              step="any"
               required
+              min="0.000001"
               className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. 5000"
+              placeholder="e.g. 500 (not lamports)"
             />
+            <p className="text-xs text-white/50 mt-1">
+              Enter amount in UI format (e.g. 500 for 500 tokens, not lamports)
+            </p>
           </Field>
 
           <Button type="submit" variant="ghost_spacex" size="spacex" className="mt-3">
