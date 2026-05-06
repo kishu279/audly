@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SlidersHorizontal, ChevronDown, MoreVertical } from "lucide-react";
 import {
   Table,
@@ -11,6 +11,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { workerNodes, WorkerNode, WorkerStatus } from "./mockData";
+import { Employee } from "@/lib/types";
 
 type FilterStatus = "ALL" | WorkerStatus;
 
@@ -83,6 +84,13 @@ function ActionButtons({ worker }: { worker: WorkerNode }) {
 export function ResourceTable() {
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("ALL");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+
+  useEffect(() => {
+    if (localStorage.getItem("employees") != null) {
+      setEmployees(JSON.parse(localStorage.getItem("employees") || "[]"));
+    }
+  }, []);
 
   const filtered =
     filterStatus === "ALL"
@@ -193,86 +201,92 @@ export function ResourceTable() {
         </TableHeader>
 
         <TableBody>
-          {filtered.map((worker) => (
-            <TableRow
-              key={worker.initials}
-              className="border-b hover:bg-white/[0.02] transition-colors"
-              style={{ borderColor: "rgba(255,255,255,0.05)" }}
-            >
-              {/* Worker node */}
-              <TableCell className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-8 h-8 rounded-sm shrink-0 flex items-center justify-center text-[10px] font-medium"
-                    style={{
-                      background: worker.initialsColor,
-                      color: "#e879f9",
-                      fontFamily: "'Courier New', monospace",
-                    }}
-                  >
-                    {worker.initials}
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span
-                      className="text-[14px] font-medium leading-tight"
-                      style={{
-                        color: "#e4e4e7",
-                        fontFamily: "'Inter', sans-serif",
-                      }}
-                    >
-                      {worker.name}
-                    </span>
-                    <span
-                      className="text-[10px]"
-                      style={{
-                        color: "#71717a",
-                        fontFamily: "'Courier New', monospace",
-                      }}
-                    >
-                      {worker.address}
-                    </span>
-                  </div>
-                </div>
-              </TableCell>
-
-              {/* Role */}
-              <TableCell className="px-6 py-4">
-                <span
-                  className="text-[12px] uppercase px-2 py-1 rounded-sm border"
-                  style={{
-                    color: "#a1a1aa",
-                    borderColor: "rgba(255,255,255,0.12)",
-                    fontFamily: "'Inter', sans-serif",
-                  }}
-                >
-                  {worker.role}
-                </span>
-              </TableCell>
-
-              {/* Allocation */}
-              <TableCell className="px-6 py-4">
+          {employees.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={3} className="px-6 py-12 text-center">
                 <span
                   className="text-[14px]"
                   style={{
-                    color: "#e5e2e1",
-                    fontFamily: "'Courier New', monospace",
+                    color: "#71717a",
+                    fontFamily: "'Inter', sans-serif",
                   }}
                 >
-                  {worker.allocation}
+                  No active users
                 </span>
               </TableCell>
-
-              {/* Status */}
-              {/* <TableCell className="px-6 py-4">
-                <StatusBadge status={worker.status} />
-              </TableCell> */}
-
-              {/* Actions */}
-              {/* <TableCell className="px-6 py-4">
-                <ActionButtons worker={worker} />
-              </TableCell> */}
             </TableRow>
-          ))}
+          ) : (
+            employees.map((employee, index) => (
+              <TableRow
+                key={employee.employeeAddress}
+                className="border-b hover:bg-white/[0.02] transition-colors"
+                style={{ borderColor: "rgba(255,255,255,0.05)" }}
+              >
+                {/* Worker node */}
+                <TableCell className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-8 h-8 rounded-sm shrink-0 flex items-center justify-center text-[10px] font-medium"
+                      style={{
+                        background: "rgba(232,121,249,0.1)",
+                        color: "#e879f9",
+                        fontFamily: "'Courier New', monospace",
+                      }}
+                    >
+                      {`W${index + 1}`}
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span
+                        className="text-[14px] font-medium leading-tight"
+                        style={{
+                          color: "#e4e4e7",
+                          fontFamily: "'Inter', sans-serif",
+                        }}
+                      >
+                        Worker {index + 1}
+                      </span>
+                      <span
+                        className="text-[10px]"
+                        style={{
+                          color: "#71717a",
+                          fontFamily: "'Courier New', monospace",
+                        }}
+                      >
+                        {employee.employeeAddress}
+                      </span>
+                    </div>
+                  </div>
+                </TableCell>
+
+                {/* Role */}
+                <TableCell className="px-6 py-4">
+                  <span
+                    className="text-[12px] uppercase px-2 py-1 rounded-sm border"
+                    style={{
+                      color: "#a1a1aa",
+                      borderColor: "rgba(255,255,255,0.12)",
+                      fontFamily: "'Inter', sans-serif",
+                    }}
+                  >
+                    WORKER
+                  </span>
+                </TableCell>
+
+                {/* Allocation */}
+                <TableCell className="px-6 py-4">
+                  <span
+                    className="text-[14px]"
+                    style={{
+                      color: "#e5e2e1",
+                      fontFamily: "'Courier New', monospace",
+                    }}
+                  >
+                    {employee.amount} SOL
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 
@@ -288,7 +302,7 @@ export function ResourceTable() {
           className="text-[10px] uppercase"
           style={{ color: "#52525b", fontFamily: "'Courier New', monospace" }}
         >
-          SHOWING {filtered.length} OF 128 ACTIVE NODES
+          SHOWING {employees.length} OF {employees.length} ACTIVE NODES
         </span>
         <div className="flex items-center gap-4">
           <button

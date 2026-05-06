@@ -1,12 +1,78 @@
+"use client";
+
 import { Download, Plus } from "lucide-react";
 import { TopNavbar } from "@/components/dashboard/TopNavbar";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { AnalyticsChart } from "@/components/dashboard/AnalyticsChart";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { ResourceTable } from "@/components/dashboard/ResourceTable";
-import { kpiMetrics } from "@/components/dashboard/mockData";
+import { KPIMetric } from "@/components/dashboard/mockData";
+import { useAdminStore } from "@/stores/useAdminStore";
+import { useWalletStore } from "@/stores/useWalletStore";
+import React, { useEffect, useState } from "react";
+import { Employee } from "@/lib/types";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
 
 export function FinancialOverviewView() {
+  const { companyDetails } = useAdminStore();
+  const { balance } = useWalletStore();
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const wallet = useAnchorWallet();
+
+  useEffect(() => {
+    if (localStorage.getItem("employees") != null) {
+      setEmployees(JSON.parse(localStorage.getItem("employees") || "[]"));
+    }
+  }, []);
+
+  const totalBudget = companyDetails?.totalAmount || 0;
+  const totalSpent = employees.reduce((sum, emp) => sum + emp.amount, 0);
+  const remainingBalance = balance || 0;
+  const activeWorkers = employees.length;
+
+  const kpiMetrics: KPIMetric[] = [
+    {
+      label: "TOTAL BUDGET",
+      iconType: "wallet",
+      value: `${totalBudget.toFixed(2)} SOL`,
+      valueStyle: "pink",
+      change: companyDetails ? "CONFIGURED" : "NOT SET",
+      changeColor: "#e879f9",
+      changeIcon: "trending-up",
+    },
+    {
+      label: "TOTAL ALLOCATED",
+      iconType: "clock",
+      value: `${totalSpent.toFixed(2)} SOL`,
+      valueStyle: "peach",
+      change: totalSpent > 0 ? "ALLOCATED" : "NO ALLOCATION",
+      changeColor: "#ffb59e",
+      changeIcon: "target",
+    },
+    {
+      label: "WALLET BALANCE",
+      iconType: "landmark",
+      value: `${remainingBalance.toFixed(2)} SOL`,
+      valueStyle: "gradient",
+      change: remainingBalance > 0 ? "AVAILABLE" : "EMPTY",
+      changeColor: "#a1a1aa",
+      changeIcon: "clock",
+    },
+    {
+      label: "ACTIVE WORKERS",
+      iconType: "users",
+      value: `${activeWorkers}`,
+      valueStyle: "yellow",
+      change: activeWorkers > 0 ? "REGISTERED" : "NONE",
+      changeColor: "#d0cc00",
+      changeIcon: "check",
+    },
+  ];
+
+  React.useEffect(() => {
+    // contract interaction to payroll function details and vault details for debugging
+  }, [wallet]);
+
   return (
     <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
       <TopNavbar />

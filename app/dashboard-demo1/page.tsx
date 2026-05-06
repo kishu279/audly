@@ -25,57 +25,92 @@ export default function DashboardDemo1Page() {
   const [employees, setEmployees] = React.useState<Employee[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [employeeDetails, setEmployeeDetails] = React.useState<any>(null);
-  const [fetchedCompanyDetails, setFetchedCompanyDetails] = React.useState<any>(null);
-  const [isLoadingEmployeeDetails, setIsLoadingEmployeeDetails] = React.useState(false);
-  const [isLoadingCompanyDetails, setIsLoadingCompanyDetails] = React.useState(false);
+  const [fetchedCompanyDetails, setFetchedCompanyDetails] =
+    React.useState<any>(null);
+  const [isLoadingEmployeeDetails, setIsLoadingEmployeeDetails] =
+    React.useState(false);
+  const [isLoadingCompanyDetails, setIsLoadingCompanyDetails] =
+    React.useState(false);
   const [claimEligibility, setClaimEligibility] = React.useState<any>(null);
-  const [isCheckingEligibility, setIsCheckingEligibility] = React.useState(false);
+  const [isCheckingEligibility, setIsCheckingEligibility] =
+    React.useState(false);
 
   // Helper function to parse and format error messages
-  const formatErrorMessage = React.useCallback((error: string): { title: string; message: string } => {
-    if (error.includes("no record of a prior credit") || error.includes("Attempt to debit an account")) {
-      return {
-        title: "Insufficient Funds",
-        message: "The payroll vault doesn't have enough funds. Please ask admin to deposit funds first."
-      };
-    }
-    
-    if (error.includes("Simulation failed")) {
-      const messageMatch = error.match(/Message: ([^.]+)/);
-      if (messageMatch) {
+  const formatErrorMessage = React.useCallback(
+    (error: string): { title: string; message: string } => {
+      if (
+        error.includes("no record of a prior credit") ||
+        error.includes("Attempt to debit an account")
+      ) {
         return {
-          title: "Transaction Failed",
-          message: messageMatch[1].trim()
+          title: "Insufficient Funds",
+          message:
+            "The payroll vault doesn't have enough funds. Please ask admin to deposit funds first.",
         };
       }
-    }
-    
-    return {
-      title: "Failed to claim payment",
-      message: error
-    };
-  }, []);
+
+      if (error.includes("Simulation failed")) {
+        const messageMatch = error.match(/Message: ([^.]+)/);
+        if (messageMatch) {
+          return {
+            title: "Transaction Failed",
+            message: messageMatch[1].trim(),
+          };
+        }
+      }
+
+      return {
+        title: "Failed to claim payment",
+        message: error,
+      };
+    },
+    [],
+  );
 
   const handleSaveCompanyDetails = React.useCallback(
     async (details: CompanyDetails) => {
       if (!wallet) {
-        notify("error", "Wallet not connected", "Please connect your wallet to continue");
+        notify(
+          "error",
+          "Wallet not connected",
+          "Please connect your wallet to continue",
+        );
         return;
       }
 
       setIsLoading(true);
       try {
-        const frequencyEnum = details.frequency.toLowerCase() === 'weekly' ? Frequency.Weekly : Frequency.Monthly;
-        const result = await contractInteraction.initializePayroll(wallet, details.totalAmount, details.mintAddress, frequencyEnum);
+        const frequencyEnum =
+          details.frequency.toLowerCase() === "weekly"
+            ? Frequency.Weekly
+            : Frequency.Monthly;
+        const result = await contractInteraction.initializePayroll(
+          wallet,
+          details.totalAmount,
+          details.mintAddress,
+          frequencyEnum,
+        );
 
         if (result.success) {
           localStorage.setItem("companyDetails", JSON.stringify(details));
-          notify("success", "Company details saved", `${result.message || "Payroll initialized successfully"}${result.data?.txSignature ? ` | TX: ${result.data.txSignature}` : ""}`);
+          notify(
+            "success",
+            "Company details saved",
+            `${result.message || "Payroll initialized successfully"}${result.data?.txSignature ? ` | TX: ${result.data.txSignature}` : ""}`,
+          );
         } else {
-          notify("error", "Failed to initialize payroll", result.error || "Unknown error occurred");
+          notify(
+            "error",
+            "Failed to initialize payroll",
+            result.error || "Unknown error occurred",
+          );
         }
       } catch (error) {
-        notify("error", "Failed to save company details", error instanceof Error ? error.message : "Unknown error occurred");
+        notify(
+          "error",
+          "Failed to save company details",
+          error instanceof Error ? error.message : "Unknown error occurred",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -86,28 +121,52 @@ export default function DashboardDemo1Page() {
   const handleAddWorkerToPayroll = React.useCallback(
     async (employee: Employee[]) => {
       if (!wallet) {
-        notify("error", "Wallet not connected", "Please connect your wallet to continue");
+        notify(
+          "error",
+          "Wallet not connected",
+          "Please connect your wallet to continue",
+        );
         return;
       }
 
       const companyDetails = localStorage.getItem("companyDetails");
       if (!companyDetails) {
-        notify("error", "Payroll not initialized", "Please initialize payroll in Company Details first");
+        notify(
+          "error",
+          "Payroll not initialized",
+          "Please initialize payroll in Company Details first",
+        );
         return;
       }
 
       setIsLoading(true);
       try {
         for (const emp of employee) {
-          const result = await contractInteraction.addEmployeeFunction(wallet, emp.employeeAddress, emp.amount);
+          const result = await contractInteraction.addEmployeeFunction(
+            wallet,
+            emp.employeeAddress,
+            emp.amount,
+          );
           if (result.success) {
-            notify("success", `Employee ${emp.employeeAddress} added`, `${result.message || "Employee added successfully"}${result.data?.txSignature ? ` | TX: ${result.data.txSignature}` : ""}`);
+            notify(
+              "success",
+              `Employee ${emp.employeeAddress} added`,
+              `${result.message || "Employee added successfully"}${result.data?.txSignature ? ` | TX: ${result.data.txSignature}` : ""}`,
+            );
           } else {
-            notify("error", `Failed to add employee ${emp.employeeAddress}`, result.error || "Unknown error occurred");
+            notify(
+              "error",
+              `Failed to add employee ${emp.employeeAddress}`,
+              result.error || "Unknown error occurred",
+            );
           }
         }
       } catch (error) {
-        notify("error", "Failed to add employees", error instanceof Error ? error.message : "Unknown error occurred");
+        notify(
+          "error",
+          "Failed to add employees",
+          error instanceof Error ? error.message : "Unknown error occurred",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -118,13 +177,21 @@ export default function DashboardDemo1Page() {
   const handleDeposit = React.useCallback(
     async (amount: number) => {
       if (!wallet) {
-        notify("error", "Wallet not connected", "Please connect your wallet to continue");
+        notify(
+          "error",
+          "Wallet not connected",
+          "Please connect your wallet to continue",
+        );
         return;
       }
 
       const companyDetails = localStorage.getItem("companyDetails");
       if (!companyDetails) {
-        notify("error", "Payroll not initialized", "Please initialize payroll in Company Details first");
+        notify(
+          "error",
+          "Payroll not initialized",
+          "Please initialize payroll in Company Details first",
+        );
         return;
       }
 
@@ -132,12 +199,24 @@ export default function DashboardDemo1Page() {
       try {
         const result = await contractInteraction.depositAmount(wallet, amount);
         if (result.success) {
-          notify("success", "Deposit successful", `${result.message || "Funds deposited successfully"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`);
+          notify(
+            "success",
+            "Deposit successful",
+            `${result.message || "Funds deposited successfully"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
+          );
         } else {
-          notify("error", "Failed to deposit funds", result.error || "Unknown error occurred");
+          notify(
+            "error",
+            "Failed to deposit funds",
+            result.error || "Unknown error occurred",
+          );
         }
       } catch (error) {
-        notify("error", "Failed to deposit funds", error instanceof Error ? error.message : "Unknown error occurred");
+        notify(
+          "error",
+          "Failed to deposit funds",
+          error instanceof Error ? error.message : "Unknown error occurred",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -145,175 +224,235 @@ export default function DashboardDemo1Page() {
     [wallet, notify],
   );
 
-  const handleStartPayroll = React.useCallback(
-    async () => {
-      if (!wallet) {
-        notify("error", "Wallet not connected", "Please connect your wallet to continue");
-        return;
+  const handleStartPayroll = React.useCallback(async () => {
+    if (!wallet) {
+      notify(
+        "error",
+        "Wallet not connected",
+        "Please connect your wallet to continue",
+      );
+      return;
+    }
+
+    const companyDetails = localStorage.getItem("companyDetails");
+    if (!companyDetails) {
+      notify(
+        "error",
+        "Payroll not initialized",
+        "Please initialize payroll in Company Details first",
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await contractInteraction.startPayroll(wallet);
+      if (result.success) {
+        notify(
+          "success",
+          "Payroll started",
+          `${result.message || "Payroll started successfully"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
+        );
+      } else {
+        notify(
+          "error",
+          "Failed to start payroll",
+          result.error || "Unknown error occurred",
+        );
       }
+    } catch (error) {
+      notify(
+        "error",
+        "Failed to start payroll",
+        error instanceof Error ? error.message : "Unknown error occurred",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [wallet, notify]);
 
-      const companyDetails = localStorage.getItem("companyDetails");
-      if (!companyDetails) {
-        notify("error", "Payroll not initialized", "Please initialize payroll in Company Details first");
-        return;
+  const handleDebugAdminState = React.useCallback(async () => {
+    if (!wallet) {
+      notify(
+        "error",
+        "Wallet not connected",
+        "Please connect your wallet to continue",
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await contractInteraction.debugAdminState(wallet);
+      if (result.success) {
+        notify(
+          "success",
+          "Debug complete",
+          "Check console for blockchain state details",
+        );
+      } else {
+        notify(
+          "error",
+          "Debug failed",
+          result.error || "Unknown error occurred",
+        );
       }
+    } catch (error) {
+      notify(
+        "error",
+        "Debug failed",
+        error instanceof Error ? error.message : "Unknown error occurred",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [wallet, notify]);
 
-      setIsLoading(true);
-      try {
-        const result = await contractInteraction.startPayroll(wallet);
-        if (result.success) {
-          notify("success", "Payroll started", `${result.message || "Payroll started successfully"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`);
-        } else {
-          notify("error", "Failed to start payroll", result.error || "Unknown error occurred");
-        }
-      } catch (error) {
-        notify("error", "Failed to start payroll", error instanceof Error ? error.message : "Unknown error occurred");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [wallet, notify],
-  );
+  const handleGetEmployeeDetails = React.useCallback(async () => {
+    if (!wallet) return;
 
-  const handleDebugAdminState = React.useCallback(
-    async () => {
-      if (!wallet) {
-        notify("error", "Wallet not connected", "Please connect your wallet to continue");
-        return;
-      }
+    const adminPubkey = localStorage.getItem("adminPubkey");
+    if (!adminPubkey) {
+      notify(
+        "error",
+        "Admin wallet not set",
+        "Please enter admin wallet address first",
+      );
+      return;
+    }
 
-      setIsLoading(true);
-      try {
-        const result = await contractInteraction.debugAdminState(wallet);
-        if (result.success) {
-          notify("success", "Debug complete", "Check console for blockchain state details");
-        } else {
-          notify("error", "Debug failed", result.error || "Unknown error occurred");
-        }
-      } catch (error) {
-        notify("error", "Debug failed", error instanceof Error ? error.message : "Unknown error occurred");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [wallet, notify],
-  );
-
-  const handleGetEmployeeDetails = React.useCallback(
-    async () => {
-      if (!wallet) return;
-
-      const adminPubkey = localStorage.getItem("adminPubkey");
-      if (!adminPubkey) {
-        notify("error", "Admin wallet not set", "Please enter admin wallet address first");
-        return;
-      }
-
-      setIsLoadingEmployeeDetails(true);
-      try {
-        const result = await contractInteraction.getEmployeeDetails(wallet, adminPubkey);
-        if (result.success) {
-          setEmployeeDetails(result.data);
-        } else {
-          setEmployeeDetails(null);
-        }
-      } catch (error) {
+    setIsLoadingEmployeeDetails(true);
+    try {
+      const result = await contractInteraction.getEmployeeDetails(
+        wallet,
+        adminPubkey,
+      );
+      if (result.success) {
+        setEmployeeDetails(result.data);
+      } else {
         setEmployeeDetails(null);
-      } finally {
-        setIsLoadingEmployeeDetails(false);
       }
-    },
-    [wallet, notify],
-  );
+    } catch (error) {
+      setEmployeeDetails(null);
+    } finally {
+      setIsLoadingEmployeeDetails(false);
+    }
+  }, [wallet, notify]);
 
-  const handleGetCompanyDetails = React.useCallback(
-    async () => {
-      if (!wallet) return;
+  const handleGetCompanyDetails = React.useCallback(async () => {
+    if (!wallet) return;
 
-      const adminPubkey = localStorage.getItem("adminPubkey");
-      if (!adminPubkey) {
-        notify("error", "Admin wallet not set", "Please enter admin wallet address first");
-        return;
-      }
+    const adminPubkey = localStorage.getItem("adminPubkey");
+    if (!adminPubkey) {
+      notify(
+        "error",
+        "Admin wallet not set",
+        "Please enter admin wallet address first",
+      );
+      return;
+    }
 
-      setIsLoadingCompanyDetails(true);
-      try {
-        const result = await contractInteraction.getCompanyDetails(wallet, adminPubkey);
-        if (result.success) {
-          setFetchedCompanyDetails(result.data);
-        } else {
-          setFetchedCompanyDetails(null);
-        }
-      } catch (error) {
+    setIsLoadingCompanyDetails(true);
+    try {
+      const result = await contractInteraction.getCompanyDetails(
+        wallet,
+        adminPubkey,
+      );
+      if (result.success) {
+        setFetchedCompanyDetails(result.data);
+      } else {
         setFetchedCompanyDetails(null);
-      } finally {
-        setIsLoadingCompanyDetails(false);
       }
-    },
-    [wallet, notify],
-  );
+    } catch (error) {
+      setFetchedCompanyDetails(null);
+    } finally {
+      setIsLoadingCompanyDetails(false);
+    }
+  }, [wallet, notify]);
 
-  const handleCheckClaimEligibility = React.useCallback(
-    async () => {
-      if (!wallet) return;
+  const handleCheckClaimEligibility = React.useCallback(async () => {
+    if (!wallet) return;
 
-      const adminPubkey = localStorage.getItem("adminPubkey");
-      if (!adminPubkey) {
-        notify("error", "Admin wallet not set", "Please enter admin wallet address first");
-        return;
-      }
+    const adminPubkey = localStorage.getItem("adminPubkey");
+    if (!adminPubkey) {
+      notify(
+        "error",
+        "Admin wallet not set",
+        "Please enter admin wallet address first",
+      );
+      return;
+    }
 
-      setIsCheckingEligibility(true);
-      try {
-        const result = await contractInteraction.checkClaimEligibility(wallet, adminPubkey);
-        if (result.success && result.data) {
-          setClaimEligibility(result.data);
-        } else {
-          setClaimEligibility(null);
-        }
-      } catch (error) {
+    setIsCheckingEligibility(true);
+    try {
+      const result = await contractInteraction.checkClaimEligibility(
+        wallet,
+        adminPubkey,
+      );
+      if (result.success && result.data) {
+        setClaimEligibility(result.data);
+      } else {
         setClaimEligibility(null);
-      } finally {
-        setIsCheckingEligibility(false);
       }
-    },
-    [wallet, notify],
-  );
+    } catch (error) {
+      setClaimEligibility(null);
+    } finally {
+      setIsCheckingEligibility(false);
+    }
+  }, [wallet, notify]);
 
-  const handleClaimPayment = React.useCallback(
-    async () => {
-      if (!wallet) {
-        notify("error", "Wallet not connected", "Please connect your wallet to continue");
-        return;
-      }
+  const handleClaimPayment = React.useCallback(async () => {
+    if (!wallet) {
+      notify(
+        "error",
+        "Wallet not connected",
+        "Please connect your wallet to continue",
+      );
+      return;
+    }
 
-      const adminPubkey = localStorage.getItem("adminPubkey");
-      if (!adminPubkey) {
-        notify("error", "Admin wallet not set", "Please enter admin wallet address first");
-        return;
-      }
+    const adminPubkey = localStorage.getItem("adminPubkey");
+    if (!adminPubkey) {
+      notify(
+        "error",
+        "Admin wallet not set",
+        "Please enter admin wallet address first",
+      );
+      return;
+    }
 
-      setIsLoading(true);
-      try {
-        const result = await contractInteraction.claimAmount(wallet, adminPubkey);
-        if (result.success) {
-          notify("success", "Payment claimed successfully", `${result.message || "Funds transferred to your wallet"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`);
-          await handleGetEmployeeDetails();
-          await handleCheckClaimEligibility();
-        } else {
-          const { title, message } = formatErrorMessage(result.error || "Unknown error occurred");
-          notify("error", title, message);
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-        const { title, message } = formatErrorMessage(errorMessage);
+    setIsLoading(true);
+    try {
+      const result = await contractInteraction.claimAmount(wallet, adminPubkey);
+      if (result.success) {
+        notify(
+          "success",
+          "Payment claimed successfully",
+          `${result.message || "Funds transferred to your wallet"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
+        );
+        await handleGetEmployeeDetails();
+        await handleCheckClaimEligibility();
+      } else {
+        const { title, message } = formatErrorMessage(
+          result.error || "Unknown error occurred",
+        );
         notify("error", title, message);
-      } finally {
-        setIsLoading(false);
       }
-    },
-    [wallet, notify, handleGetEmployeeDetails, handleCheckClaimEligibility, formatErrorMessage],
-  );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      const { title, message } = formatErrorMessage(errorMessage);
+      notify("error", title, message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    wallet,
+    notify,
+    handleGetEmployeeDetails,
+    handleCheckClaimEligibility,
+    formatErrorMessage,
+  ]);
 
   const handleFileChange = React.useCallback((file: File | null) => {
     setFile(file);
@@ -331,7 +470,9 @@ export default function DashboardDemo1Page() {
   const handleUpdateWorker = React.useCallback(
     (updatedEmployee: Employee) => {
       const updatedEmployees = employees.map((emp) =>
-        emp.employeeAddress === updatedEmployee.employeeAddress ? updatedEmployee : emp,
+        emp.employeeAddress === updatedEmployee.employeeAddress
+          ? updatedEmployee
+          : emp,
       );
       setEmployees(updatedEmployees);
       localStorage.setItem("employees", JSON.stringify(updatedEmployees));
@@ -374,7 +515,11 @@ export default function DashboardDemo1Page() {
             [Buffer.from("payroll"), wallet.publicKey.toBuffer()],
             programId,
           );
-          notify("success", "Company details loaded", `Payroll PDA: ${payrollPda.toBase58()}`);
+          notify(
+            "success",
+            "Company details loaded",
+            `Payroll PDA: ${payrollPda.toBase58()}`,
+          );
         }
       } catch (error) {
         console.error("Error loading company details:", error);
@@ -410,11 +555,11 @@ export default function DashboardDemo1Page() {
         )}
 
         {role === "worker" && (
-          <>
-            <TopNavbar />
-            <div className="flex w-full">
-              <WorkerSidebar />
-              <WorkerContent 
+          <div className="flex w-full min-h-screen">
+            <WorkerSidebar />
+            <div className="flex flex-col flex-1 w-full bg-[#000000]">
+              <TopNavbar />
+              <WorkerContent
                 isLoading={isLoading}
                 employeeDetails={employeeDetails}
                 fetchedCompanyDetails={fetchedCompanyDetails}
@@ -428,7 +573,7 @@ export default function DashboardDemo1Page() {
                 onClaimPayment={handleClaimPayment}
               />
             </div>
-          </>
+          </div>
         )}
       </main>
     </>

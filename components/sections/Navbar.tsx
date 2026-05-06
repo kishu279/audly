@@ -4,6 +4,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const NAV_LINKS = ["Solutions", "Ecosystem", "Security"];
 
@@ -11,6 +12,7 @@ export function Navbar() {
   const { publicKey, connected, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const router = useRouter();
 
   const handleWalletClick = () => {
     if (connected) disconnect();
@@ -38,6 +40,12 @@ export function Navbar() {
               {link}
             </a>
           ))}
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="text-white/70 hover:text-white text-sm font-medium transition-colors duration-200 cursor-pointer"
+          >
+            Dashboard
+          </button>
         </div>
 
         {/* CTA */}
@@ -74,6 +82,15 @@ export function Navbar() {
               {link}
             </a>
           ))}
+          <button
+            onClick={() => {
+              router.push("/dashboard");
+              setMobileOpen(false);
+            }}
+            className="text-white/70 hover:text-white text-sm font-medium transition-colors text-left"
+          >
+            Dashboard
+          </button>
           <button
             onClick={handleWalletClick}
             className="border border-cyan-400 text-cyan-400 px-5 py-2 text-sm font-medium rounded-sm hover:bg-cyan-400/10 transition-all duration-200 mt-2 w-full"

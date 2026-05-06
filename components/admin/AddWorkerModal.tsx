@@ -24,7 +24,7 @@ export function AddWorkerModal({ onAddWorker }: AddWorkerModalProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     const newEmployee: Employee = {
       employeeAddress: formData.get("employeeAddress") as string,
       amount: Number(formData.get("amount")),
@@ -38,51 +38,85 @@ export function AddWorkerModal({ onAddWorker }: AddWorkerModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost_spacex" size="spacex">
+        <button
+          className="px-4 py-2 rounded-[2px] text-[12px] uppercase text-[#e5e2e1] hover:bg-[rgba(255,255,255,0.08)] transition-colors border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.05)]"
+          style={{ fontFamily: "'Inter', sans-serif" }}
+        >
           ADD WORKER MANUALLY
-        </Button>
+        </button>
       </DialogTrigger>
-      <DialogContent className="bg-black border-white/20 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-[#121212] border-[rgba(255,255,255,0.08)] rounded-[2px] text-[#e5e2e1] max-w-xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-aerospace text-white text-xl">
+          <DialogTitle
+            className="text-[20px] uppercase tracking-[-0.4px] text-[#e5e2e1]"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
             ADD NEW WORKER
           </DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogDescription
+            className="text-[14px] text-[#71717a]"
+            style={{ fontFamily: "'Inter', sans-serif" }}
+          >
             Fill in all the required fields to add a new worker.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
-          <Field>
-            <FieldLabel htmlFor="employeeAddress">Employee Address *</FieldLabel>
-            <Input
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="employeeAddress"
+              className="text-[10px] text-[#71717a] uppercase tracking-[0.1em]"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              Employee Address *
+            </label>
+            <input
               id="employeeAddress"
               name="employeeAddress"
               required
-              className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. 5VuMUWoowHHFVwvnAPiS1nRd9vmdEFaVHwoy944b3KPC"
+              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-[2px] px-4 py-3 text-white focus:outline-none focus:border-[#d946ef] text-[14px]"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              placeholder="E.G. 5VuMUWoowHHFVwvnAPiS1nRd9vmdEFaVHwoy944b3KPC"
             />
-          </Field>
+          </div>
 
-          <Field>
-            <FieldLabel htmlFor="amount">Amount (UI Format) *</FieldLabel>
-            <Input
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="amount"
+              className="text-[10px] text-[#71717a] uppercase tracking-[0.1em]"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              Amount (UI Format) *
+            </label>
+            <input
               id="amount"
               name="amount"
               type="number"
               step="any"
               required
               min="0.000001"
-              className="bg-transparent border-white/20 text-white"
-              placeholder="e.g. 500 (not lamports)"
+              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-[2px] px-4 py-3 text-white focus:outline-none focus:border-[#d946ef] text-[14px]"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              placeholder="E.G. 500 (NOT LAMPORTS)"
             />
-            <p className="text-xs text-white/50 mt-1">
-              Enter amount in UI format (e.g. 500 for 500 tokens, not lamports)
+            <p
+              className="text-[10px] text-[#71717a] uppercase tracking-[0.05em]"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              ENTER AMOUNT IN UI FORMAT (E.G. 500 FOR 500 TOKENS, NOT LAMPORTS)
             </p>
-          </Field>
+          </div>
 
-          <Button type="submit" variant="ghost_spacex" size="spacex" className="mt-3">
+          <button
+            type="submit"
+            className="mt-3 px-4 py-2 rounded-[2px] text-[12px] uppercase text-white hover:opacity-90 transition-opacity self-start"
+            style={{
+              background:
+                "linear-gradient(107.77deg, #FF571A 0%, #FD25EA 100%)",
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
             ADD WORKER
-          </Button>
+          </button>
         </form>
       </DialogContent>
     </Dialog>

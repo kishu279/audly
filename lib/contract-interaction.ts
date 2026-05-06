@@ -38,15 +38,15 @@ class ContractInteraction {
   private toRaw(amount: number, decimals: number): BN {
     const multiplier = Math.pow(10, decimals);
     const rawAmount = amount * multiplier;
-    
+
     // Check for overflow
     if (!Number.isSafeInteger(rawAmount)) {
       throw new Error(
         `Amount ${amount} with ${decimals} decimals exceeds safe integer range. ` +
-        `Please use a smaller amount or check your decimals.`
+          `Please use a smaller amount or check your decimals.`,
       );
     }
-    
+
     return new BN(Math.floor(rawAmount));
   }
 
@@ -422,6 +422,46 @@ class ContractInteraction {
     }
   }
 
+  async getPayrollState(wallet: AnchorWallet, adminPubkey: string) {
+    const program = this.getProgram(wallet);
+
+    try {
+      const adminPublicKey = new PublicKey(adminPubkey);
+
+      const [payrollPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from("payroll"), adminPublicKey.toBuffer()],
+        program.programId,
+      );
+
+      const [vaultPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from("vault"), payrollPda.toBuffer()],
+        program.programId,
+      );
+
+      const payrollAccount =
+        await program.account.payrollConfig.fetch(payrollPda);
+      const vaultAccountInfo = await this.connection.getAccountInfo(vaultPda);
+
+      console.log("\n[Contract] Payroll PDA:", { payrollAccount });
+      console.log("[Contract] Vault PDA:", { vaultAccountInfo });
+
+      return {
+        success: false,
+        data: {
+          payrollAccount: payrollAccount,
+          vaultAccountInfo: vaultAccountInfo,
+        },
+      };
+    } catch (error) {
+      console.error("Error fetching payroll state:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      };
+    }
+  }
+
   /// Company details
   async getCompanyDetails(wallet: AnchorWallet, adminPubkey: string) {
     const program = this.getProgram(wallet);
@@ -532,7 +572,7 @@ class ContractInteraction {
       const currentTime = Math.floor(Date.now() / 1000);
       const startTime = payrollAccount.startTime.toNumber();
       const frequency = payrollAccount.frequency;
-      const freqSecs = "weekly" in frequency ? 7 * 86400 : 60 * 2; // 2 min testing 
+      const freqSecs = "weekly" in frequency ? 7 * 86400 : 60 * 2; // 2 min testing
       // const freqSecs = "weekly" in frequency ? 7 * 86400 : 30 * 86400;
       const periodsPassed = Math.floor((currentTime - startTime) / freqSecs);
       const vested = periodsPassed * employeeAccount.amount.toNumber();
