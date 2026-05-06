@@ -8,6 +8,7 @@ import { AdminContent } from "@/components/admin/AdminContent";
 import { WorkerSidebar } from "@/components/worker/WorkerSidebar";
 import { WorkerContent } from "@/components/worker/WorkerContent";
 import { FinancialOverviewView } from "@/components/admin/FinancialOverviewView";
+import { TopNavbar } from "@/components/dashboard/TopNavbar";
 import Papa from "papaparse";
 import { CompanyDetails, Employee, Frequency } from "@/lib/types";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
@@ -383,7 +384,7 @@ export default function DashboardDemo1Page() {
 
   return (
     <>
-      <main className="flex w-full bg-black min-h-screen">
+      <main className="flex flex-col w-full bg-black min-h-screen">
         <RoleSelectionModal />
 
         {role === "admin" && (
@@ -409,22 +410,25 @@ export default function DashboardDemo1Page() {
         )}
 
         {role === "worker" && (
-          <div className="flex w-full">
-            <WorkerSidebar />
-            <WorkerContent 
-              isLoading={isLoading}
-              employeeDetails={employeeDetails}
-              fetchedCompanyDetails={fetchedCompanyDetails}
-              isLoadingEmployeeDetails={isLoadingEmployeeDetails}
-              isLoadingCompanyDetails={isLoadingCompanyDetails}
-              claimEligibility={claimEligibility}
-              isCheckingEligibility={isCheckingEligibility}
-              onGetEmployeeDetails={handleGetEmployeeDetails}
-              onGetCompanyDetails={handleGetCompanyDetails}
-              onCheckClaimEligibility={handleCheckClaimEligibility}
-              onClaimPayment={handleClaimPayment}
-            />
-          </div>
+          <>
+            <TopNavbar />
+            <div className="flex w-full">
+              <WorkerSidebar />
+              <WorkerContent 
+                isLoading={isLoading}
+                employeeDetails={employeeDetails}
+                fetchedCompanyDetails={fetchedCompanyDetails}
+                isLoadingEmployeeDetails={isLoadingEmployeeDetails}
+                isLoadingCompanyDetails={isLoadingCompanyDetails}
+                claimEligibility={claimEligibility}
+                isCheckingEligibility={isCheckingEligibility}
+                onGetEmployeeDetails={handleGetEmployeeDetails}
+                onGetCompanyDetails={handleGetCompanyDetails}
+                onCheckClaimEligibility={handleCheckClaimEligibility}
+                onClaimPayment={handleClaimPayment}
+              />
+            </div>
+          </>
         )}
       </main>
     </>
