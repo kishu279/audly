@@ -23,7 +23,10 @@ export default function DashboardPage() {
             <div className="flex flex-col gap-1">
               <h1
                 className="text-[16px] leading-tight"
-                style={{ color: "#e5e2e1", fontFamily: "'Space Grotesk', sans-serif" }}
+                style={{
+                  color: "#e5e2e1",
+                  fontFamily: "'Space Grotesk', sans-serif",
+                }}
               >
                 Financial Overview
               </h1>
@@ -46,7 +49,10 @@ export default function DashboardPage() {
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
-                <Download className="w-[9px] h-[9px]" style={{ color: "#e5e2e1" }} />
+                <Download
+                  className="w-[9px] h-[9px]"
+                  style={{ color: "#e5e2e1" }}
+                />
                 EXPORT REPORT
               </button>
 
@@ -54,7 +60,8 @@ export default function DashboardPage() {
               <button
                 className="flex items-center gap-2 px-4 py-2 rounded-sm text-[12px] uppercase text-white hover:opacity-90 transition-opacity"
                 style={{
-                  background: "linear-gradient(107.77deg, #FF571A 0%, #FD25EA 100%)",
+                  background:
+                    "linear-gradient(107.77deg, #FF571A 0%, #FD25EA 100%)",
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
@@ -72,6 +79,7 @@ export default function DashboardPage() {
           </div>
 
           {/* ── Analytics + Activity Feed ───────────────── */}
+          {/* 
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">
               <AnalyticsChart />
@@ -80,6 +88,7 @@ export default function DashboardPage() {
               <ActivityFeed />
             </div>
           </div>
+          */}
 
           {/* ── Resource Allocation Table ───────────────── */}
           <ResourceTable />

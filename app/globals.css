@@ -25,8 +25,10 @@
   /* ── 2. COLOR PALETTE ─────────────────────────────────────────────── */
   --config-bg:             #000000;             /* page background          */
   --config-foreground:     #f0f0fa;             /* primary text             */
-  --config-accent:         #d946ef;             /* CTA / highlights         */
-  --config-accent-dim:     rgba(217, 70, 239, 0.15); /* accent tint          */
+  --config-accent:         #a855f7;             /* CTA / highlights (purple)*/
+  --config-accent-dim:     rgba(168, 85, 247, 0.15); /* accent tint          */
+  --config-cyan:           #22d3ee;             /* cyan accent              */
+  --config-cyan-dim:       rgba(34, 211, 238, 0.15); /* cyan tint            */
   --config-surface:        rgba(240, 240, 250, 0.05); /* card / panel fill   */
   --config-surface-hover:  rgba(240, 240, 250, 0.10); /* hover state fill    */
   --config-border:         rgba(240, 240, 250, 0.12); /* subtle borders      */
@@ -77,6 +79,8 @@
   --color-white-100:                var(--white-100);
   --color-accent:                   var(--config-accent);
   --color-accent-dim:               var(--config-accent-dim);
+  --color-cyan:                     var(--config-cyan);
+  --color-cyan-dim:                 var(--config-cyan-dim);
   --color-surface:                  var(--config-surface);
   --color-surface-hover:            var(--config-surface-hover);
   --color-border:                   var(--config-border);

@@ -70,7 +70,10 @@ function ActionButtons({ worker }: { worker: WorkerNode }) {
       >
         EDIT
       </button>
-      <button className="text-zinc-600 hover:text-zinc-400 transition-colors" aria-label="More actions">
+      <button
+        className="text-zinc-600 hover:text-zinc-400 transition-colors"
+        aria-label="More actions"
+      >
         <MoreVertical className="w-[14px] h-[14px]" />
       </button>
     </div>
@@ -99,7 +102,10 @@ export function ResourceTable() {
         <div className="flex flex-col gap-1">
           <span
             className="text-[16px] leading-tight"
-            style={{ color: "#e5e2e1", fontFamily: "'Space Grotesk', sans-serif" }}
+            style={{
+              color: "#e5e2e1",
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
           >
             Resource Allocation
           </span>
@@ -123,9 +129,15 @@ export function ResourceTable() {
               fontFamily: "'Inter', sans-serif",
             }}
           >
-            <SlidersHorizontal className="w-[10px] h-[7px]" style={{ color: "#6b7280" }} />
+            <SlidersHorizontal
+              className="w-[10px] h-[7px]"
+              style={{ color: "#6b7280" }}
+            />
             STATUS: {filterStatus}
-            <ChevronDown className="w-[10px] h-[8px]" style={{ color: "#6b7280" }} />
+            <ChevronDown
+              className="w-[10px] h-[8px]"
+              style={{ color: "#6b7280" }}
+            />
           </button>
 
           {dropdownOpen && (
@@ -164,7 +176,11 @@ export function ResourceTable() {
             className="border-b hover:bg-transparent"
             style={{ borderColor: "rgba(255,255,255,0.05)" }}
           >
-            {["WORKER NODE", "ROLE", "ALLOCATION", "STATUS", "ACTIONS"].map((col) => (
+            {[
+              "WORKER NODE",
+              "ROLE",
+              "ALLOCATION" /*, "STATUS", "ACTIONS" */,
+            ].map((col) => (
               <TableHead
                 key={col}
                 className="text-[10px] uppercase tracking-[0.1em] font-bold h-12 px-6"
@@ -199,13 +215,19 @@ export function ResourceTable() {
                   <div className="flex flex-col gap-0.5">
                     <span
                       className="text-[14px] font-medium leading-tight"
-                      style={{ color: "#e4e4e7", fontFamily: "'Inter', sans-serif" }}
+                      style={{
+                        color: "#e4e4e7",
+                        fontFamily: "'Inter', sans-serif",
+                      }}
                     >
                       {worker.name}
                     </span>
                     <span
                       className="text-[10px]"
-                      style={{ color: "#71717a", fontFamily: "'Courier New', monospace" }}
+                      style={{
+                        color: "#71717a",
+                        fontFamily: "'Courier New', monospace",
+                      }}
                     >
                       {worker.address}
                     </span>
@@ -231,21 +253,24 @@ export function ResourceTable() {
               <TableCell className="px-6 py-4">
                 <span
                   className="text-[14px]"
-                  style={{ color: "#e5e2e1", fontFamily: "'Courier New', monospace" }}
+                  style={{
+                    color: "#e5e2e1",
+                    fontFamily: "'Courier New', monospace",
+                  }}
                 >
                   {worker.allocation}
                 </span>
               </TableCell>
 
               {/* Status */}
-              <TableCell className="px-6 py-4">
+              {/* <TableCell className="px-6 py-4">
                 <StatusBadge status={worker.status} />
-              </TableCell>
+              </TableCell> */}
 
               {/* Actions */}
-              <TableCell className="px-6 py-4">
+              {/* <TableCell className="px-6 py-4">
                 <ActionButtons worker={worker} />
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
