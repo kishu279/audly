@@ -2,68 +2,108 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ═══════════════════════════════════════════════════════════════════════
+   THEME CONFIG — Edit ONLY this block to retheme the entire app
+   ═══════════════════════════════════════════════════════════════════════
+
+   FONT: Change --config-font-family to swap fonts app-wide.
+   The var(--font-space-grotesk) token is injected by next/font in fonts.ts.
+   To use a different Google font:
+     1. Import it in app/fonts.ts  (e.g. Inter, Geist, Sora, Plus Jakarta Sans)
+     2. Replace var(--font-space-grotesk) below with the new CSS variable
+
+   COLORS: Replace the hex/rgba values in the palette section below.
+   You can paste any color palette — each variable controls a semantic role.
+   Tailwind utilities like bg-(--config-accent) will pick them up automatically.
+
+   FONT SIZES: Adjust the scale values to shift all text up or down.
+═══════════════════════════════════════════════════════════════════════ */
 :root {
-  --background: #000000;
-  --foreground: #f0f0fa;
-  --ghost-bg: rgba(240, 240, 250, 0.1);
-  --ghost-border: rgba(240, 240, 250, 0.35);
-  --white-100: #ffffff;
-  --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
+  /* ── 1. FONT FAMILY ───────────────────────────────────────────────── */
+  --config-font-family: var(--font-space-grotesk), "D-DIN", Arial, Helvetica, sans-serif;
+
+  /* ── 2. COLOR PALETTE ─────────────────────────────────────────────── */
+  --config-bg:             #000000;             /* page background          */
+  --config-foreground:     #f0f0fa;             /* primary text             */
+  --config-accent:         #d946ef;             /* CTA / highlights         */
+  --config-accent-dim:     rgba(217, 70, 239, 0.15); /* accent tint          */
+  --config-surface:        rgba(240, 240, 250, 0.05); /* card / panel fill   */
+  --config-surface-hover:  rgba(240, 240, 250, 0.10); /* hover state fill    */
+  --config-border:         rgba(240, 240, 250, 0.12); /* subtle borders      */
+  --config-border-strong:  rgba(240, 240, 250, 0.35); /* prominent borders   */
+
+  /* ── 3. FONT SIZE SCALE ───────────────────────────────────────────── */
+  --text-label:            0.8125rem;    /* 13px  – section group labels  */
+  --text-sublabel:         0.875rem;     /* 14px  – sub-menu items        */
+  --text-body:             1rem;         /* 16px  – buttons, nav labels   */
+  --text-md:               1.125rem;     /* 18px  – content body          */
+  --text-sidebar-title:    1.375rem;     /* 22px  – sidebar panel title   */
+  --text-section-heading:  2.125rem;     /* 34px  – page section headings */
+  --text-display:          3.125rem;     /* 50px  – hero / display text   */
+
+  /* ═════════════════════════════════════════════════════════════════════
+     INTERNAL — derived from config above. No need to edit below this line.
+  ═════════════════════════════════════════════════════════════════════ */
+
+  --background:   var(--config-bg);
+  --foreground:   var(--config-foreground);
+  --ghost-bg:     var(--config-surface);
+  --ghost-border: var(--config-border-strong);
+  --white-100:    #ffffff;
+
+  --sidebar:                    hsl(0 0% 98%);
+  --sidebar-foreground:         hsl(240 5.3% 26.1%);
+  --sidebar-primary:            hsl(240 5.9% 10%);
   --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --sidebar-accent:             hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground:  hsl(240 5.9% 10%);
+  --sidebar-border:             hsl(220 13% 91%);
+  --sidebar-ring:               hsl(217.2 91.2% 59.8%);
 
-  /* ── Typography scale ───────────────────────────────────── */
-  --text-label: 0.625rem;       /* 10px  – section group labels  */
-  --text-sublabel: 0.6875rem;   /* 11px  – sub-menu items        */
-  --text-body: 0.8125rem;       /* 13px  – buttons, nav labels   */
-  --text-md: 0.9375rem;         /* 15px  – content body          */
-  --text-sidebar-title: 1.125rem; /* 18px – sidebar panel title  */
-  --text-section-heading: 1.75rem; /* 28px – page section headings */
-  --text-display: 2.75rem;      /* 44px  – hero/display text     */
-
-  /* ── Letter-spacing ────────────────────────────────────── */
-  --tracking-aerospace: 0.08em;
+  /* ── Letter-spacing ─────────────────────────────────────────────── */
+  --tracking-aerospace:     0.08em;
   --tracking-aerospace-nav: 0.1em;
 
-  /* ── Line height ────────────────────────────────────────── */
+  /* ── Line height ─────────────────────────────────────────────────── */
   --leading-tight: 1.15;
-  --leading-snug: 1.35;
+  --leading-snug:  1.35;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-ghost: var(--ghost-bg);
-  --color-ghost-border: var(--ghost-border);
-  --color-white-100: var(--white-100);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
+  --color-background:               var(--background);
+  --color-foreground:               var(--foreground);
+  --color-ghost:                    var(--ghost-bg);
+  --color-ghost-border:             var(--ghost-border);
+  --color-white-100:                var(--white-100);
+  --color-accent:                   var(--config-accent);
+  --color-accent-dim:               var(--config-accent-dim);
+  --color-surface:                  var(--config-surface);
+  --color-surface-hover:            var(--config-surface-hover);
+  --color-border:                   var(--config-border);
+  --color-border-strong:            var(--config-border-strong);
+  --color-sidebar-ring:             var(--sidebar-ring);
+  --color-sidebar-border:           var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent:           var(--sidebar-accent);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
+  --color-sidebar-primary:          var(--sidebar-primary);
+  --color-sidebar-foreground:       var(--sidebar-foreground);
+  --color-sidebar:                  var(--sidebar);
 
-  /* Font family – Space Grotesk from next/font, D-DIN as honoured fallback */
-  --font-sans: var(--font-space-grotesk), "D-DIN", Arial, Helvetica, sans-serif;
+  /* Font family — single source of truth */
+  --font-sans: var(--config-font-family);
 
   /* Typography scale exposed as Tailwind utilities */
-  --font-size-label: var(--text-label);
-  --font-size-sublabel: var(--text-sublabel);
-  --font-size-body: var(--text-body);
-  --font-size-md: var(--text-md);
-  --font-size-sidebar-title: var(--text-sidebar-title);
+  --font-size-label:           var(--text-label);
+  --font-size-sublabel:        var(--text-sublabel);
+  --font-size-body:            var(--text-body);
+  --font-size-md:              var(--text-md);
+  --font-size-sidebar-title:   var(--text-sidebar-title);
   --font-size-section-heading: var(--text-section-heading);
-  --font-size-display: var(--text-display);
+  --font-size-display:         var(--text-display);
 
   /* Letter-spacing tokens */
-  --letter-spacing-aerospace: var(--tracking-aerospace);
+  --letter-spacing-aerospace:     var(--tracking-aerospace);
   --letter-spacing-aerospace-nav: var(--tracking-aerospace-nav);
 }
 
@@ -89,79 +129,74 @@ body {
   line-height: var(--leading-tight);
 }
 
-/* ─── Override @solana/wallet-adapter-react-ui styles ─────────────────────── */
+/* ─── Override @solana/wallet-adapter-react-ui styles ──────────────────────── */
 
-/* Modal overlay */
 .wallet-adapter-modal-wrapper {
   background: rgba(0, 0, 0, 0.85) !important;
   backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(240, 240, 250, 0.12) !important;
+  border: 1px solid var(--config-border) !important;
   border-radius: 12px !important;
 }
 
-/* Modal title */
 .wallet-adapter-modal-title {
-  font-family: "D-DIN", Arial, sans-serif !important;
+  font-family: var(--config-font-family) !important;
   text-transform: uppercase !important;
   letter-spacing: 1.17px !important;
-  color: #f0f0fa !important;
-  font-size: 14px !important;
+  color: var(--config-foreground) !important;
+  font-size: var(--text-body) !important;
 }
 
-/* Each wallet button in the modal */
 .wallet-adapter-button {
-  font-family: "D-DIN", Arial, sans-serif !important;
+  font-family: var(--config-font-family) !important;
   text-transform: uppercase !important;
   letter-spacing: 1.17px !important;
-  font-size: 12px !important;
+  font-size: var(--text-sublabel) !important;
   font-weight: 700 !important;
-  color: #f0f0fa !important;
-  background: rgba(240, 240, 250, 0.05) !important;
-  border: 1px solid rgba(240, 240, 250, 0.2) !important;
+  color: var(--config-foreground) !important;
+  background: var(--config-surface) !important;
+  border: 1px solid var(--config-border-strong) !important;
   border-radius: 8px !important;
   transition: background 0.2s, border-color 0.2s !important;
 }
 
 .wallet-adapter-button:hover {
-  background: rgba(240, 240, 250, 0.12) !important;
-  border-color: rgba(240, 240, 250, 0.35) !important;
+  background: var(--config-surface-hover) !important;
+  border-color: var(--config-border-strong) !important;
 }
 
-/* Connect button (when used standalone) */
 .wallet-adapter-button-trigger {
-  background: rgba(240, 240, 250, 0.1) !important;
-  border: 1px solid rgba(240, 240, 250, 0.35) !important;
+  background: var(--config-surface) !important;
+  border: 1px solid var(--config-border-strong) !important;
   border-radius: 32px !important;
   padding: 10px 18px !important;
-  font-family: "D-DIN", Arial, sans-serif !important;
+  font-family: var(--config-font-family) !important;
   text-transform: uppercase !important;
   letter-spacing: 1.17px !important;
-  font-size: 13px !important;
+  font-size: var(--text-body) !important;
   font-weight: 700 !important;
-  color: #f0f0fa !important;
+  color: var(--config-foreground) !important;
 }
 
-/* Modal close button */
 .wallet-adapter-modal-button-close {
-  background: rgba(240, 240, 250, 0.05) !important;
+  background: var(--config-surface) !important;
 }
 
 /* Animate-in utility for notifications */
 @keyframes slide-in-from-right {
   from { transform: translateX(1.25rem); opacity: 0; }
-  to   { transform: translateX(0);      opacity: 1; }
+  to   { transform: translateX(0);       opacity: 1; }
 }
 .animate-in {
   animation: slide-in-from-right 0.3s ease forwards;
 }
 
 .dark {
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar:                    hsl(240 5.9% 10%);
+  --sidebar-foreground:         hsl(240 4.8% 95.9%);
+  --sidebar-primary:            hsl(224.3 76.3% 48%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --sidebar-accent:             hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground:  hsl(240 4.8% 95.9%);
+  --sidebar-border:             hsl(240 3.7% 15.9%);
+  --sidebar-ring:               hsl(217.2 91.2% 59.8%);
 }

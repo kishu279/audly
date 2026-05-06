@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AdminContentProps {
   onFileChange: (file: File | null) => void;
@@ -49,6 +50,14 @@ const updateColumns: ColumnDef<Employee>[] = [
     header: "Amount",
   },
 ];
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+const tabVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
+};
 
 export function AdminContent({
   onFileChange,
@@ -246,8 +255,6 @@ export function AdminContent({
         );
 
       case "add_workers":
-        console.log("Employees data:", employees);
-        console.log("Columns:", columns);
         return (
           <div className="flex flex-col gap-6">
             <h1
@@ -264,9 +271,7 @@ export function AdminContent({
             {employees.length > 0 && (
               <button
                 onClick={() => {
-                  console.log("Saving employees to blockchain:", employees);
                   onHandleAddWorker(employees);
-                  // TODO: Add blockchain save logic here
                 }}
                 className="text-body font-bold text-aerospace-nav text-white bg-ghost border border-ghost-border rounded-[32px] px-[18px] py-[11px] hover:bg-white/20 hover:text-white-100 transition-all self-start"
               >
@@ -299,7 +304,7 @@ export function AdminContent({
                     </tr>
                   </thead>
                   <tbody>
-                    {employees.map((employee, index) => (
+                    {employees.map((employee) => (
                       <HoverCard key={employee.employeeAddress} openDelay={200}>
                         <HoverCardTrigger asChild>
                           <tr className="border-b border-white/10 hover:bg-white/5 cursor-pointer">
@@ -444,8 +449,18 @@ export function AdminContent({
   };
 
   return (
-    <div className="flex-1 px-8 py-8 min-h-screen relative">
-      {renderContent()}
+    <div className="flex-1 px-8 py-8 min-h-screen relative overflow-hidden">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          variants={tabVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+          {renderContent()}
+        </motion.div>
+      </AnimatePresence>
 
       {/* Debug button to clear localStorage */}
       <button
