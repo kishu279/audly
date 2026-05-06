@@ -39,17 +39,17 @@ export function DashboardDemo1Sidebar() {
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Sidebar collapsible="none" className="border-r border-white/10 bg-black w-64 min-h-screen">
-        <SidebarContent className="bg-black">
+      <Sidebar collapsible="none" className="border-r border-[rgba(255,255,255,0.08)] bg-[#000000] w-64 min-h-screen">
+        <SidebarContent className="bg-[#000000]">
           {/* Panel heading */}
           <div className="px-5 pt-6 pb-4">
-            <h2 className="text-sidebar-title font-bold text-aerospace text-white tracking-[var(--tracking-aerospace)]">
+            <h2 className="text-[20px] font-bold text-[#d946ef] uppercase tracking-[-0.05em]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               ADMIN PANEL
             </h2>
           </div>
 
           <SidebarGroup className="pt-1">
-            <SidebarGroupLabel className="text-aerospace text-white/40 text-label px-3 mb-1">
+            <SidebarGroupLabel className="text-[#71717a] text-[10px] uppercase tracking-[0.1em] px-3 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
               MANAGEMENT
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -64,9 +64,10 @@ export function DashboardDemo1Sidebar() {
                       <SidebarMenuButton
                         isActive={activeTab === tab}
                         onClick={() => setActiveTab(tab as any)}
-                        className={`text-aerospace-nav text-body hover:bg-white/10 hover:text-white transition-colors ${
-                          activeTab === tab ? "bg-white/10 text-white" : "text-white/70"
+                        className={`text-[12px] uppercase transition-colors rounded-[2px] ${
+                          activeTab === tab ? "bg-[rgba(255,255,255,0.05)] text-[#d946ef]" : "text-[#d4d4d8] hover:bg-[rgba(255,255,255,0.05)] hover:text-[#d4d4d8]"
                         }`}
+                        style={{ fontFamily: "'Inter', sans-serif" }}
                       >
                         {label}
                       </SidebarMenuButton>
@@ -78,7 +79,8 @@ export function DashboardDemo1Sidebar() {
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       onClick={() => setUpdatePaymentOpen(!updatePaymentOpen)}
-                      className="text-aerospace-nav text-body text-white/70 hover:bg-white/10 hover:text-white transition-colors justify-between w-full flex"
+                      className="text-[12px] uppercase text-[#d4d4d8] hover:bg-[rgba(255,255,255,0.05)] hover:text-[#d4d4d8] transition-colors justify-between w-full flex rounded-[2px]"
+                      style={{ fontFamily: "'Inter', sans-serif" }}
                     >
                       <span>UPDATE PAYMENT DETAILS</span>
                       <ChevronRight
@@ -86,14 +88,15 @@ export function DashboardDemo1Sidebar() {
                       />
                     </SidebarMenuButton>
                     {updatePaymentOpen && (
-                      <SidebarMenuSub className="border-l border-white/20 ml-3">
+                      <SidebarMenuSub className="border-l border-[rgba(255,255,255,0.08)] ml-3">
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton
                             isActive={activeTab === "add_workers"}
                             onClick={() => setActiveTab("add_workers")}
-                            className={`text-aerospace-nav text-sublabel hover:bg-white/10 hover:text-white transition-colors ${
-                              activeTab === "add_workers" ? "bg-white/10 text-white" : "text-white/50"
+                            className={`text-[11px] uppercase transition-colors rounded-[2px] mb-1 ${
+                              activeTab === "add_workers" ? "bg-[rgba(255,255,255,0.05)] text-[#d946ef]" : "text-[#71717a] hover:bg-[rgba(255,255,255,0.05)] hover:text-[#d4d4d8]"
                             }`}
+                            style={{ fontFamily: "'Inter', sans-serif" }}
                           >
                             ADD WORKERS
                           </SidebarMenuSubButton>
@@ -102,9 +105,10 @@ export function DashboardDemo1Sidebar() {
                           <SidebarMenuSubButton
                             isActive={activeTab === "update_worker_details"}
                             onClick={() => setActiveTab("update_worker_details")}
-                            className={`text-aerospace-nav text-sublabel hover:bg-white/10 hover:text-white transition-colors ${
-                              activeTab === "update_worker_details" ? "bg-white/10 text-white" : "text-white/50"
+                            className={`text-[11px] uppercase transition-colors rounded-[2px] ${
+                              activeTab === "update_worker_details" ? "bg-[rgba(255,255,255,0.05)] text-[#d946ef]" : "text-[#71717a] hover:bg-[rgba(255,255,255,0.05)] hover:text-[#d4d4d8]"
                             }`}
+                            style={{ fontFamily: "'Inter', sans-serif" }}
                           >
                             UPDATE WORKER DETAILS
                           </SidebarMenuSubButton>
@@ -118,7 +122,7 @@ export function DashboardDemo1Sidebar() {
           </SidebarGroup>
 
           <SidebarGroup className="pt-3">
-            <SidebarGroupLabel className="text-aerospace text-white/40 text-label px-3 mb-1">
+            <SidebarGroupLabel className="text-[#71717a] text-[10px] uppercase tracking-[0.1em] px-3 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
               TRANSACTIONS
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -134,13 +138,14 @@ export function DashboardDemo1Sidebar() {
                         onClick={() => setActiveTab(tab as any)}
                         className={
                           danger
-                            ? `text-aerospace-nav text-body hover:bg-red-500/20 hover:text-red-400 transition-colors ${
-                                activeTab === tab ? "bg-red-500/20 text-red-400" : "text-white/70"
+                            ? `text-[12px] uppercase transition-colors rounded-[2px] ${
+                                activeTab === tab ? "bg-[rgba(16,185,129,0.15)] text-[#10b981]" : "text-[#f59e0b] hover:bg-[rgba(245,158,11,0.15)]"
                               }`
-                            : `text-aerospace-nav text-body hover:bg-white/10 hover:text-white transition-colors ${
-                                activeTab === tab ? "bg-white/10 text-white" : "text-white/70"
+                            : `text-[12px] uppercase transition-colors rounded-[2px] ${
+                                activeTab === tab ? "bg-[rgba(255,255,255,0.05)] text-[#d946ef]" : "text-[#d4d4d8] hover:bg-[rgba(255,255,255,0.05)] hover:text-[#d4d4d8]"
                               }`
                         }
+                        style={{ fontFamily: "'Inter', sans-serif" }}
                       >
                         {label}
                       </SidebarMenuButton>
