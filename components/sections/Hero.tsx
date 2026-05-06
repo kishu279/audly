@@ -1,8 +1,36 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export function Hero() {
+  const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
+  const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
+
+  const handleGetStarted = () => {
+    if (connected) {
+      router.push("/dashboard");
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const handleConnectWallet = () => {
+    setShowModal(false);
+    setVisible(true);
+  };
   return (
     <section className="relative w-full min-h-[calc(100vh-64px)] bg-gradient-to-br from-neutral-200 via-neutral-100 to-slate-200 overflow-hidden">
       {/* Subtle tint blobs */}
@@ -36,11 +64,11 @@ export function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <button className="px-7 py-3 text-sm font-semibold text-white rounded-sm bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-purple-500/30 cursor-pointer">
+            <button 
+              onClick={handleGetStarted}
+              className="px-7 py-3 text-sm font-semibold text-white rounded-sm bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-purple-500/30 cursor-pointer"
+            >
               Get Started
-            </button>
-            <button className="px-7 py-3 text-sm font-medium text-neutral-700 rounded-sm border border-neutral-400 hover:border-neutral-600 hover:text-neutral-900 transition-all duration-200 cursor-pointer">
-              View Documentation
             </button>
           </div>
         </motion.div>
@@ -63,6 +91,31 @@ export function Hero() {
           </div>
         </motion.div>
       </div>
+
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>Connect Wallet Required</DialogTitle>
+            <DialogDescription>
+              Please connect your wallet to access the dashboard.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 mt-4">
+            <button
+              onClick={() => setShowModal(false)}
+              className="px-4 py-2 text-sm font-medium text-neutral-700 rounded-sm border border-neutral-300 hover:bg-neutral-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleConnectWallet}
+              className="px-4 py-2 text-sm font-semibold text-white rounded-sm bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all"
+            >
+              Connect Wallet
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

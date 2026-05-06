@@ -5,7 +5,7 @@ import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
-const NAV_LINKS = ["Solutions", "Ecosystem", "Security", "Docs"];
+const NAV_LINKS = ["Solutions", "Ecosystem", "Security"];
 
 export function Navbar() {
   const { publicKey, connected, disconnect } = useWallet();
