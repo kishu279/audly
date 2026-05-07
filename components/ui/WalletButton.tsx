@@ -42,10 +42,10 @@ export function WalletButton() {
   if (!connected) {
     return (
       <Button
-        variant="ghost_spacex"
-        size="spacex"
+        variant="ghost"
         onClick={() => setVisible(true)}
         disabled={connecting}
+        className="h-auto px-4 py-2"
       >
         {connecting ? "CONNECTING..." : "CONNECT WALLET"}
       </Button>
@@ -62,10 +62,10 @@ export function WalletButton() {
         </span>
       )}
       <Button
-        variant="ghost_spacex"
-        size="spacex"
+        variant="ghost"
         onClick={handleDisconnect}
         title={publicKey?.toBase58()}
+        className="h-auto px-4 py-2"
       >
         {publicKey?.toBase58().slice(0, 4)}...{publicKey?.toBase58().slice(-4)}
       </Button>

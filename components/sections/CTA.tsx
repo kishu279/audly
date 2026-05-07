@@ -18,7 +18,7 @@ export function CTA() {
         <h2 className="text-[48px] font-bold leading-none text-aerospace text-white mb-6">
           READY TO EXPLORE
         </h2>
-        <Button variant="ghost_spacex" size="spacex_large">
+        <Button variant="outline" size="lg" className="text-white border-white hover:bg-white/10">
           GET STARTED
         </Button>
       </div>

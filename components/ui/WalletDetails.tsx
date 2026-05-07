@@ -13,9 +13,9 @@ export function WalletDetails() {
   if (!connected || !publicKey) {
     return (
       <Button
-        variant="link_spacex"
-        size="none"
+        variant="link"
         onClick={() => setVisible(true)}
+        className="h-auto p-0"
       >
         WALLET DETAILS
       </Button>
@@ -28,7 +28,7 @@ export function WalletDetails() {
         {network.toUpperCase()}
       </span>
       <span className="text-white/30">·</span>
-      <Button variant="link_spacex" size="none" onClick={() => setVisible(true)}>
+      <Button variant="link" onClick={() => setVisible(true)} className="h-auto p-0">
         {balance !== null ? `${balance.toFixed(4)} SOL` : "WALLET DETAILS"}
       </Button>
     </div>

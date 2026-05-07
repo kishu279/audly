@@ -150,9 +150,9 @@ export function TopNavbar() {
             </button>
           ) : (
             <Button
-              variant="ghost_spacex"
-              size="spacex"
+              variant="ghost"
               onClick={() => setVisible(true)}
+              className="p-0 h-auto hover:bg-transparent"
             >
               CONNECT WALLET
             </Button>
