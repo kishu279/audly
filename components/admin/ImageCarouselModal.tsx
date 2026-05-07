@@ -116,6 +116,11 @@ const defaultImages: ImageCarouselData[] = [
     location: "/assets/eligible-to-claim.png",
     description: "Employees can claim their available payments",
   },
+  {
+    title: "another-payment",
+    location: "/assets/another-payment.png",
+    description: "Process another payment cycle for employees",
+  },
 ];
 
 export function ImageCarouselModal({
