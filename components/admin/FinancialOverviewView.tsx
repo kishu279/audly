@@ -11,13 +11,23 @@ import { useAdminStore } from "@/stores/useAdminStore";
 import { useWalletStore } from "@/stores/useWalletStore";
 import React, { useEffect, useState } from "react";
 import { Employee } from "@/lib/types";
-import { useAnchorWallet } from "@solana/wallet-adapter-react";
+import { AnchorWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
+import { contractInteraction } from "@/lib/contract-interaction";
+
+interface PayrollState {
+  totalBudget: string;
+  frequency: string;
+  startTime: string;
+  employeeCount: string;
+  vaultBalance: number | null;
+}
 
 export function FinancialOverviewView() {
   const { companyDetails } = useAdminStore();
   const { balance } = useWalletStore();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const wallet = useAnchorWallet();
+  const [payrollState, setPayrollState] = useState<PayrollState | null>(null);
 
   useEffect(() => {
     if (localStorage.getItem("employees") != null) {
@@ -25,10 +35,19 @@ export function FinancialOverviewView() {
     }
   }, []);
 
-  const totalBudget = companyDetails?.totalAmount || 0;
+  const totalBudget = payrollState?.totalBudget
+    ? parseFloat(payrollState.totalBudget)
+    : companyDetails?.totalAmount || 0;
   const totalSpent = employees.reduce((sum, emp) => sum + emp.amount, 0);
-  const remainingBalance = balance || 0;
-  const activeWorkers = employees.length;
+  const remainingBalance = payrollState?.vaultBalance || balance || 0;
+  const activeWorkers = payrollState?.employeeCount
+    ? parseInt(payrollState.employeeCount)
+    : employees.length;
+  const paymentFrequency =
+    payrollState?.frequency || companyDetails?.frequency || null;
+  const startTime = payrollState?.startTime
+    ? new Date(parseInt(payrollState.startTime) * 1000).toLocaleString()
+    : null;
 
   const kpiMetrics: KPIMetric[] = [
     {
@@ -36,21 +55,25 @@ export function FinancialOverviewView() {
       iconType: "wallet",
       value: `${totalBudget.toFixed(2)} SOL`,
       valueStyle: "pink",
-      change: companyDetails ? "CONFIGURED" : "NOT SET",
+      change: payrollState || companyDetails ? "CONFIGURED" : "NOT SET",
       changeColor: "#e879f9",
       changeIcon: "trending-up",
     },
     {
-      label: "TOTAL ALLOCATED",
+      label: "PAYMENT FREQUENCY",
       iconType: "clock",
-      value: `${totalSpent.toFixed(2)} SOL`,
+      value: paymentFrequency
+        ? typeof paymentFrequency === "object"
+          ? Object.keys(paymentFrequency)[0].toUpperCase()
+          : paymentFrequency.toUpperCase()
+        : "NOT SET",
       valueStyle: "peach",
-      change: totalSpent > 0 ? "ALLOCATED" : "NO ALLOCATION",
+      change: paymentFrequency ? "CONFIGURED" : "NOT CONFIGURED",
       changeColor: "#ffb59e",
       changeIcon: "target",
     },
     {
-      label: "WALLET BALANCE",
+      label: "VAULT BALANCE",
       iconType: "landmark",
       value: `${remainingBalance.toFixed(2)} SOL`,
       valueStyle: "gradient",
@@ -67,10 +90,38 @@ export function FinancialOverviewView() {
       changeColor: "#d0cc00",
       changeIcon: "check",
     },
+    {
+      label: "START TIME",
+      iconType: "clock",
+      value: startTime || "NOT STARTED",
+      valueStyle: "gradient",
+      change: startTime ? "ACTIVE" : "PENDING",
+      changeColor: "#a1a1aa",
+      changeIcon: "clock",
+    },
   ];
 
+  const handleGetPayrollState = React.useCallback(async () => {
+    const adminPubkey = localStorage.getItem("adminPubkey");
+    if (!adminPubkey) {
+      console.log("Admin public key not found in localStorage");
+      return;
+    }
+    const result = await contractInteraction.getPayrollState(
+      wallet as AnchorWallet,
+      adminPubkey,
+    );
+
+    if (result.success && result.data) {
+      setPayrollState(result.data);
+    }
+    console.log("Payroll State:", { result });
+  }, [wallet]);
+
   React.useEffect(() => {
-    // contract interaction to payroll function details and vault details for debugging
+    if (wallet) {
+      handleGetPayrollState();
+    }
   }, [wallet]);
 
   return (
@@ -132,7 +183,7 @@ export function FinancialOverviewView() {
         </div>
 
         {/* KPI Cards grid */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           {kpiMetrics.map((metric) => (
             <KPICard key={metric.label} metric={metric} />
           ))}

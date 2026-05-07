@@ -441,17 +441,31 @@ class ContractInteraction {
       const payrollAccount =
         await program.account.payrollConfig.fetch(payrollPda);
       const vaultAccountInfo = await this.connection.getAccountInfo(vaultPda);
+      const vaultBalance = vaultAccountInfo
+        ? await this.connection.getTokenAccountBalance(vaultPda)
+        : null;
 
-      console.log("\n[Contract] Payroll PDA:", { payrollAccount });
-      console.log("[Contract] Vault PDA:", { vaultAccountInfo });
+      const mintInfo = await getMint(this.connection, payrollAccount.mint);
 
-      return {
-        success: false,
+      console.log("\n[Debug] Payroll Account:", payrollAccount);
+      console.log("[Debug] Vault Account Info:", vaultAccountInfo);
+      console.log("[Debug] Vault Balance:", vaultBalance);
+      console.log("[Debug] Mint Info:", mintInfo);
+
+      const result = {
+        success: true,
         data: {
-          payrollAccount: payrollAccount,
-          vaultAccountInfo: vaultAccountInfo,
+          totalBudget:
+            payrollAccount.totalAmount.toString() /
+            Math.pow(10, mintInfo.decimals),
+          frequency: payrollAccount.frequency,
+          startTime: payrollAccount.startTime.toString(),
+          employeeCount: payrollAccount.employeeCount.toString(),
+          vaultBalance: vaultBalance ? vaultBalance.value.uiAmount : null,
         },
       };
+
+      return result;
     } catch (error) {
       console.error("Error fetching payroll state:", error);
       return {
