@@ -622,19 +622,6 @@ export function AdminContent({
             {renderContent()}
           </motion.div>
         </AnimatePresence>
-
-        {/* Debug button to clear localStorage */}
-        <button
-          onClick={() => {
-            localStorage.removeItem("employees");
-            localStorage.removeItem("companyDetails");
-            window.location.reload();
-          }}
-          className="fixed bottom-6 right-6 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-[#e5e2e1] text-[12px] uppercase px-4 py-2 rounded-[2px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
-          style={{ fontFamily: "'Inter', sans-serif" }}
-        >
-          CLEAR DATA
-        </button>
       </div>
     </div>
   );

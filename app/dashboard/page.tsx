@@ -16,6 +16,7 @@ import { contractInteraction } from "@/lib/contract-interaction";
 import { useNotificationStore } from "@/stores/useNotificationStore";
 import { PublicKey } from "@solana/web3.js";
 import idl from "@/contract/auddly.json";
+import { QuickActionsModal } from "@/components/admin/QuickActionsModal";
 
 export default function DashboardDemo1Page() {
   const wallet = useAnchorWallet();
@@ -34,6 +35,7 @@ export default function DashboardDemo1Page() {
   const [claimEligibility, setClaimEligibility] = React.useState<any>(null);
   const [isCheckingEligibility, setIsCheckingEligibility] =
     React.useState(false);
+  const [quickActionsOpen, setQuickActionsOpen] = React.useState(false);
 
   // Helper function to parse and format error messages
   const formatErrorMessage = React.useCallback(
@@ -533,25 +535,46 @@ export default function DashboardDemo1Page() {
         <RoleSelectionModal />
 
         {role === "admin" && (
-          <div className="flex w-full">
-            <DashboardDemo1Sidebar />
-            {activeTab === "view" ? (
-              <FinancialOverviewView />
-            ) : (
-              <AdminContent
-                onHandleAddWorker={handleAddWorkerToPayroll}
-                onHandleSaveCompanyDetails={handleSaveCompanyDetails}
-                onHandleDeposit={handleDeposit}
-                onHandleStartPayroll={handleStartPayroll}
-                onHandleDebugState={handleDebugAdminState}
-                onFileChange={handleFileChange}
-                employees={employees}
-                onAddWorker={handleAddWorker}
-                onUpdateWorker={handleUpdateWorker}
-                isLoading={isLoading}
-              />
-            )}
-          </div>
+          <>
+            <div className="flex w-full">
+              <DashboardDemo1Sidebar />
+              {activeTab === "view" ? (
+                <FinancialOverviewView />
+              ) : (
+                <AdminContent
+                  onHandleAddWorker={handleAddWorkerToPayroll}
+                  onHandleSaveCompanyDetails={handleSaveCompanyDetails}
+                  onHandleDeposit={handleDeposit}
+                  onHandleStartPayroll={handleStartPayroll}
+                  onHandleDebugState={handleDebugAdminState}
+                  onFileChange={handleFileChange}
+                  employees={employees}
+                  onAddWorker={handleAddWorker}
+                  onUpdateWorker={handleUpdateWorker}
+                  isLoading={isLoading}
+                />
+              )}
+            </div>
+
+            {/* Floating Action Button */}
+            <button
+              onClick={() => setQuickActionsOpen(true)}
+              className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center text-white text-3xl shadow-lg hover:opacity-90 transition-opacity cursor-pointer"
+              style={{
+                background: "linear-gradient(135deg, #FF571A 0%, #FD25EA 100%)",
+                boxShadow: "0 4px 20px rgba(253,37,234,0.4)",
+                zIndex: 9999,
+              }}
+              aria-label="Debugger"
+            >
+              +
+            </button>
+
+            <QuickActionsModal
+              open={quickActionsOpen}
+              onOpenChange={setQuickActionsOpen}
+            />
+          </>
         )}
 
         {role === "worker" && (

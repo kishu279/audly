@@ -60,12 +60,38 @@ export function DashboardDemo1Sidebar() {
               className="text-[#71717a] text-[10px] uppercase tracking-[0.1em] px-3 mb-1"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
+              VIEW
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={activeTab === "view"}
+                    onClick={() => setActiveTab("view")}
+                    className={`text-[12px] uppercase transition-colors rounded-[2px] ${
+                      activeTab === "view"
+                        ? "bg-[rgba(255,255,255,0.05)] text-[#d946ef]"
+                        : "text-[#d4d4d8] hover:bg-[rgba(255,255,255,0.05)] hover:text-[#d4d4d8]"
+                    }`}
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
+                    FINANCIAL OVERVIEW
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <SidebarGroup className="pt-1">
+            <SidebarGroupLabel
+              className="text-[#71717a] text-[10px] uppercase tracking-[0.1em] px-3 mb-1"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
               MANAGEMENT
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {[
-                  { label: "VIEW", tab: "view" },
                   { label: "COMPANY DETAILS", tab: "company_details" },
                   { label: "DEPOSIT", tab: "deposit" },
                 ].map(({ label, tab }, i) => (

@@ -7,10 +7,28 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Button } from "@/components/ui/button";
 import { FeatureComingSoonTooltip } from "@/components/ui/FeatureComingSoonTooltip";
+import { contractInteraction } from "@/lib/contract-interaction";
+import { useState, useEffect } from "react";
 
 export function TopNavbar() {
   const { publicKey, connected, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
+  const [currentCluster, setCurrentCluster] = useState<string>("localnet");
+
+  useEffect(() => {
+    const checkCluster = () => {
+      const clusterUrl = contractInteraction.getCurrentClusterUrl();
+      if (clusterUrl.includes("127.0.0.1") || clusterUrl.includes("localhost")) {
+        setCurrentCluster("localnet");
+      } else if (clusterUrl.includes("devnet")) {
+        setCurrentCluster("devnet");
+      }
+    };
+    
+    checkCluster();
+    const interval = setInterval(checkCluster, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <motion.header
@@ -57,6 +75,32 @@ export function TopNavbar() {
 
       {/* Right: icons + connect button */}
       <div className="flex items-center gap-6">
+        {/* Cluster Indicator */}
+        <div
+          className="flex items-center gap-2 px-3 py-1.5 rounded-[2px] border"
+          style={{
+            background:
+              currentCluster === "devnet"
+                ? "rgba(217,70,239,0.1)"
+                : "rgba(255,255,255,0.05)",
+            borderColor:
+              currentCluster === "devnet"
+                ? "rgba(217,70,239,0.3)"
+                : "rgba(255,255,255,0.1)",
+          }}
+        >
+          <span className="text-[16px]">🌐</span>
+          <span
+            className="text-[10px] uppercase tracking-[0.1em]"
+            style={{
+              color: currentCluster === "devnet" ? "#d946ef" : "#71717a",
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
+            {currentCluster}
+          </span>
+        </div>
+
         {/* <motion.button
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.95 }}

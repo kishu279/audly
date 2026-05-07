@@ -25,9 +25,23 @@ const clusterUrl = "http://127.0.0.1:8899";
 
 class ContractInteraction {
   private connection: Connection;
+  private clusterApiUrl: string;
 
   constructor() {
     this.connection = new Connection(clusterUrl);
+    this.clusterApiUrl = clusterUrl;
+  }
+
+  // change the cluster url
+  public async changeClusterUrl(newUrl: string) {
+    this.clusterApiUrl = newUrl;
+    this.connection = new Connection(newUrl);
+    return { success: true, message: `Cluster changed to ${newUrl}` };
+  }
+
+  // get current cluster url
+  public getCurrentClusterUrl(): string {
+    return this.clusterApiUrl;
   }
 
   private async getMintDecimals(mintAddress: PublicKey): Promise<number> {

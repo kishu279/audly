@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Plus } from "lucide-react";
+import { Download } from "lucide-react";
 import { TopNavbar } from "@/components/dashboard/TopNavbar";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { AnalyticsChart } from "@/components/dashboard/AnalyticsChart";
@@ -122,13 +122,17 @@ export function FinancialOverviewView() {
   }, [wallet]);
 
   React.useEffect(() => {
+    console.log("FinancialOverviewView mounted");
+  }, []);
+
+  React.useEffect(() => {
     if (wallet) {
       handleGetPayrollState();
     }
   }, [wallet]);
 
   return (
-    <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+    <div className="flex flex-col flex-1 min-w-0 overflow-hidden relative">
       <TopNavbar />
 
       <main className="flex-1 overflow-y-auto px-8 py-6 space-y-6">
@@ -184,7 +188,6 @@ export function FinancialOverviewView() {
                 }}
                 disabled={true}
               >
-                <Plus className="w-[8px] h-[8px]" />
                 NEW SPLIT
               </button>
             </FeatureComingSoonTooltip>
@@ -212,18 +215,6 @@ export function FinancialOverviewView() {
 
         {/* Resource Allocation Table */}
         <ResourceTable />
-
-        {/* Floating Action Button */}
-        <button
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl shadow-lg hover:opacity-90 transition-opacity z-50"
-          style={{
-            background: "linear-gradient(135deg, #FF571A 0%, #FD25EA 100%)",
-            boxShadow: "0 4px 20px rgba(253,37,234,0.4)",
-          }}
-          aria-label="New action"
-        >
-          <Plus className="w-5 h-5" />
-        </button>
       </main>
     </div>
   );
