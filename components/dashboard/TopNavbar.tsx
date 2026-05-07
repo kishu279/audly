@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Button } from "@/components/ui/button";
+import { FeatureComingSoonTooltip } from "@/components/ui/FeatureComingSoonTooltip";
 
 export function TopNavbar() {
   const { publicKey, connected, disconnect } = useWallet();
@@ -56,7 +57,7 @@ export function TopNavbar() {
 
       {/* Right: icons + connect button */}
       <div className="flex items-center gap-6">
-        <motion.button
+        {/* <motion.button
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -74,17 +75,20 @@ export function TopNavbar() {
           aria-label="Display"
         >
           <Monitor className="w-[22px] h-[22px]" />
-        </motion.button>
+        </motion.button> */}
 
-        <motion.button
-          whileHover={{ scale: 1.15, rotate: 30 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          className="text-zinc-500 hover:text-zinc-200 transition-colors"
-          aria-label="Settings"
-        >
-          <Settings className="w-[22px] h-[22px]" />
-        </motion.button>
+        <FeatureComingSoonTooltip>
+          <motion.button
+            whileHover={{ scale: 1.15, rotate: 30 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            className="text-zinc-500 hover:text-zinc-200 transition-colors"
+            aria-label="Settings"
+            disabled
+          >
+            <Settings className="w-[22px] h-[22px]" />
+          </motion.button>
+        </FeatureComingSoonTooltip>
 
         <div
           className="flex items-center px-4 py-[7px] rounded-full text-white text-[10px] tracking-[0.05em] uppercase font-normal border border-[#d946ef] hover:opacity-90 transition-opacity"

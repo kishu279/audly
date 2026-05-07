@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { Employee } from "@/lib/types";
 import { AnchorWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { contractInteraction } from "@/lib/contract-interaction";
+import { FeatureComingSoonTooltip } from "@/components/ui/FeatureComingSoonTooltip";
 
 interface PayrollState {
   totalBudget: string | number;
@@ -46,7 +47,9 @@ export function FinancialOverviewView() {
   const paymentFrequency =
     payrollState?.frequency || companyDetails?.frequency || null;
   const startTime = payrollState?.startTime
-    ? new Date(parseInt(payrollState.startTime.toString()) * 1000).toLocaleString()
+    ? new Date(
+        parseInt(payrollState.startTime.toString()) * 1000,
+      ).toLocaleString()
     : null;
 
   const kpiMetrics: KPIMetric[] = [
@@ -112,7 +115,7 @@ export function FinancialOverviewView() {
       adminPubkey,
     );
 
-    if (result.success && 'data' in result) {
+    if (result.success && "data" in result) {
       setPayrollState(result.data);
     }
     console.log("Payroll State:", { result });
@@ -151,34 +154,40 @@ export function FinancialOverviewView() {
 
           <div className="flex items-center gap-3">
             {/* Export Report */}
-            <button
-              className="flex items-center gap-2 px-4 py-2 rounded-sm border text-[12px] uppercase hover:bg-white/5 transition-colors"
-              style={{
-                background: "rgba(255,255,255,0.05)",
-                borderColor: "rgba(255,255,255,0.10)",
-                color: "#e5e2e1",
-                fontFamily: "'Inter', sans-serif",
-              }}
-            >
-              <Download
-                className="w-[9px] h-[9px]"
-                style={{ color: "#e5e2e1" }}
-              />
-              EXPORT REPORT
-            </button>
+            <FeatureComingSoonTooltip>
+              <button
+                className="flex items-center gap-2 px-4 py-2 rounded-sm border text-[12px] uppercase cursor-not-allowed opacity-50"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  borderColor: "rgba(255,255,255,0.10)",
+                  color: "#e5e2e1",
+                  fontFamily: "'Inter', sans-serif",
+                }}
+                disabled={true}
+              >
+                <Download
+                  className="w-[9px] h-[9px]"
+                  style={{ color: "#e5e2e1" }}
+                />
+                EXPORT REPORT
+              </button>
+            </FeatureComingSoonTooltip>
 
             {/* New Split */}
-            <button
-              className="flex items-center gap-2 px-4 py-2 rounded-sm text-[12px] uppercase text-white hover:opacity-90 transition-opacity"
-              style={{
-                background:
-                  "linear-gradient(107.77deg, #FF571A 0%, #FD25EA 100%)",
-                fontFamily: "'Inter', sans-serif",
-              }}
-            >
-              <Plus className="w-[8px] h-[8px]" />
-              NEW SPLIT
-            </button>
+            <FeatureComingSoonTooltip>
+              <button
+                className="flex items-center gap-2 px-4 py-2 rounded-sm text-[12px] uppercase text-white cursor-not-allowed opacity-50"
+                style={{
+                  background:
+                    "linear-gradient(107.77deg, #FF571A 0%, #FD25EA 100%)",
+                  fontFamily: "'Inter', sans-serif",
+                }}
+                disabled={true}
+              >
+                <Plus className="w-[8px] h-[8px]" />
+                NEW SPLIT
+              </button>
+            </FeatureComingSoonTooltip>
           </div>
         </div>
 

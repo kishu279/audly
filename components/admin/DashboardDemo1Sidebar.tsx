@@ -17,6 +17,7 @@ import {
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { FeatureComingSoonTooltip } from "@/components/ui/FeatureComingSoonTooltip";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -178,26 +179,19 @@ export function DashboardDemo1Sidebar() {
                     variants={itemVariants}
                   >
                     <SidebarMenuItem>
-                      <SidebarMenuButton
-                        isActive={activeTab === tab}
-                        onClick={() => setActiveTab(tab as any)}
-                        className={
-                          danger
-                            ? `text-[12px] uppercase transition-colors rounded-[2px] ${
-                                activeTab === tab
-                                  ? "bg-[rgba(239,68,68,0.15)] text-[#ef4444]"
-                                  : "text-[#f87171] hover:bg-[rgba(239,68,68,0.1)]"
-                              }`
-                            : `text-[12px] uppercase transition-colors rounded-[2px] ${
-                                activeTab === tab
-                                  ? "bg-[rgba(255,255,255,0.05)] text-[#d946ef]"
-                                  : "text-[#d4d4d8] hover:bg-[rgba(255,255,255,0.05)] hover:text-[#d4d4d8]"
-                              }`
-                        }
-                        style={{ fontFamily: "'Inter', sans-serif" }}
-                      >
-                        {label}
-                      </SidebarMenuButton>
+                      <FeatureComingSoonTooltip>
+                        <SidebarMenuButton
+                          disabled
+                          className={
+                            danger
+                              ? "text-[12px] uppercase transition-colors rounded-[2px] cursor-not-allowed opacity-50 text-[#f87171]"
+                              : "text-[12px] uppercase transition-colors rounded-[2px] cursor-not-allowed opacity-50 text-[#d4d4d8]"
+                          }
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        >
+                          {label}
+                        </SidebarMenuButton>
+                      </FeatureComingSoonTooltip>
                     </SidebarMenuItem>
                   </motion.div>
                 ))}

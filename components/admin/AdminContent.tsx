@@ -15,8 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
 import { TopNavbar } from "@/components/dashboard/TopNavbar";
+import { FeatureComingSoonTooltip } from "@/components/ui/FeatureComingSoonTooltip";
 
 interface AdminContentProps {
   onFileChange: (file: File | null) => void;
@@ -389,7 +389,25 @@ export function AdminContent({
                   </thead>
                   <tbody>
                     {employees.map((employee) => (
-                      <HoverCard key={employee.employeeAddress} openDelay={200}>
+                      <tr
+                        key={employee.employeeAddress}
+                        className="border-b border-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.02)] cursor-pointer transition-colors"
+                      >
+                        <td
+                          className="p-4 text-[14px] text-[#d4d4d8]"
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        >
+                          {employee.employeeAddress}
+                        </td>
+                        <td
+                          className="p-4 text-[14px] text-[#d4d4d8]"
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        >
+                          {employee.amount}
+                        </td>
+                      </tr>
+                    ))}
+                    {/* <HoverCard key={employee.employeeAddress} openDelay={200}>
                         <HoverCardTrigger asChild>
                           <tr className="border-b border-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.02)] cursor-pointer transition-colors">
                             <td
@@ -438,18 +456,32 @@ export function AdminContent({
                             </Button>
                           </div>
                         </HoverCardContent>
-                      </HoverCard>
-                    ))}
+                      </HoverCard> */}
                   </tbody>
                 </table>
               </div>
             </div>
-            <UpdateWorkerModal
+            {/* <UpdateWorkerModal
               employee={selectedEmployee}
               open={updateModalOpen}
               onOpenChange={setUpdateModalOpen}
               onUpdateWorker={onUpdateWorker}
-            />
+            /> */}
+            <div className="mt-4">
+              <FeatureComingSoonTooltip>
+                <button
+                  disabled
+                  className="px-4 py-2 rounded-[2px] text-[12px] uppercase text-white cursor-not-allowed opacity-50"
+                  style={{
+                    background:
+                      "linear-gradient(107.77deg, #FF571A 0%, #FD25EA 100%)",
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  UPDATE WORKER DETAILS
+                </button>
+              </FeatureComingSoonTooltip>
+            </div>
           </div>
         );
 

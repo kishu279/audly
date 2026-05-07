@@ -3,11 +3,12 @@
 import React from "react";
 import { useAdminStore } from "@/stores/useAdminStore";
 import { RoleSelectionModal } from "@/components/admin/RoleSelectionModal";
-import { DashboardSidebar } from "@/components/admin/DashboardSidebar";
+import { DashboardDemo1Sidebar } from "@/components/admin/DashboardDemo1Sidebar";
 import { AdminContent } from "@/components/admin/AdminContent";
 import { WorkerSidebar } from "@/components/worker/WorkerSidebar";
 import { WorkerContent } from "@/components/worker/WorkerContent";
-import { Navbar } from "@/components/sections/Navbar";
+import { FinancialOverviewView } from "@/components/admin/FinancialOverviewView";
+import { TopNavbar } from "@/components/dashboard/TopNavbar";
 import Papa from "papaparse";
 import { CompanyDetails, Employee, Frequency } from "@/lib/types";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
@@ -16,9 +17,9 @@ import { useNotificationStore } from "@/stores/useNotificationStore";
 import { PublicKey } from "@solana/web3.js";
 import idl from "@/contract/auddly.json";
 
-export default function DashboardPage() {
+export default function DashboardDemo1Page() {
   const wallet = useAnchorWallet();
-  const { role, setCompanyDetails } = useAdminStore();
+  const { role, activeTab, setCompanyDetails } = useAdminStore();
   const { notify } = useNotificationStore();
   const [file, setFile] = React.useState<File | null>(null);
   const [employees, setEmployees] = React.useState<Employee[]>([]);
@@ -37,7 +38,6 @@ export default function DashboardPage() {
   // Helper function to parse and format error messages
   const formatErrorMessage = React.useCallback(
     (error: string): { title: string; message: string } => {
-      // Check for insufficient funds error
       if (
         error.includes("no record of a prior credit") ||
         error.includes("Attempt to debit an account")
@@ -49,7 +49,6 @@ export default function DashboardPage() {
         };
       }
 
-      // Check for simulation failed errors
       if (error.includes("Simulation failed")) {
         const messageMatch = error.match(/Message: ([^.]+)/);
         if (messageMatch) {
@@ -60,7 +59,6 @@ export default function DashboardPage() {
         }
       }
 
-      // Default error
       return {
         title: "Failed to claim payment",
         message: error,
@@ -69,7 +67,6 @@ export default function DashboardPage() {
     [],
   );
 
-  // SAVING THE COMPANY DETAILS AND INITIALIZING THE PAYROLL ON THE SOLANA BLOCKCHAIN
   const handleSaveCompanyDetails = React.useCallback(
     async (details: CompanyDetails) => {
       if (!wallet) {
@@ -83,20 +80,16 @@ export default function DashboardPage() {
 
       setIsLoading(true);
       try {
-        // Convert frequency string to enum
         const frequencyEnum =
           details.frequency.toLowerCase() === "weekly"
             ? Frequency.Weekly
             : Frequency.Monthly;
-
         const result = await contractInteraction.initializePayroll(
           wallet,
           details.totalAmount,
           details.mintAddress,
           frequencyEnum,
         );
-
-        console.log("Initialize Payroll Result:", result);
 
         if (result.success) {
           localStorage.setItem("companyDetails", JSON.stringify(details));
@@ -106,7 +99,6 @@ export default function DashboardPage() {
             `${result.message || "Payroll initialized successfully"}${result.data?.txSignature ? ` | TX: ${result.data.txSignature}` : ""}`,
           );
         } else {
-          console.error("Payroll initialization failed:", result.error);
           notify(
             "error",
             "Failed to initialize payroll",
@@ -114,7 +106,6 @@ export default function DashboardPage() {
           );
         }
       } catch (error) {
-        console.error("Exception in handleSaveCompanyDetails:", error);
         notify(
           "error",
           "Failed to save company details",
@@ -127,7 +118,6 @@ export default function DashboardPage() {
     [wallet, notify],
   );
 
-  // SAVING THE WORKER DETAILS AND ADDING THE WORKER TO THE PAYROLL ON THE SOLANA BLOCKCHAIN
   const handleAddWorkerToPayroll = React.useCallback(
     async (employee: Employee[]) => {
       if (!wallet) {
@@ -139,7 +129,6 @@ export default function DashboardPage() {
         return;
       }
 
-      // Check if company details exist (payroll initialized)
       const companyDetails = localStorage.getItem("companyDetails");
       if (!companyDetails) {
         notify(
@@ -158,9 +147,6 @@ export default function DashboardPage() {
             emp.employeeAddress,
             emp.amount,
           );
-
-          console.log(`Add Employee ${emp.employeeAddress} Result:`, result);
-
           if (result.success) {
             notify(
               "success",
@@ -168,10 +154,6 @@ export default function DashboardPage() {
               `${result.message || "Employee added successfully"}${result.data?.txSignature ? ` | TX: ${result.data.txSignature}` : ""}`,
             );
           } else {
-            console.error(
-              `Failed to add employee ${emp.employeeAddress}:`,
-              result.error,
-            );
             notify(
               "error",
               `Failed to add employee ${emp.employeeAddress}`,
@@ -180,7 +162,6 @@ export default function DashboardPage() {
           }
         }
       } catch (error) {
-        console.error("Exception in handleAddWorkerToPayroll:", error);
         notify(
           "error",
           "Failed to add employees",
@@ -193,7 +174,6 @@ export default function DashboardPage() {
     [wallet, notify],
   );
 
-  // DEPOSIT FUNDS TO PAYROLL VAULT
   const handleDeposit = React.useCallback(
     async (amount: number) => {
       if (!wallet) {
@@ -205,7 +185,6 @@ export default function DashboardPage() {
         return;
       }
 
-      // Check if company details exist (payroll initialized)
       const companyDetails = localStorage.getItem("companyDetails");
       if (!companyDetails) {
         notify(
@@ -219,9 +198,6 @@ export default function DashboardPage() {
       setIsLoading(true);
       try {
         const result = await contractInteraction.depositAmount(wallet, amount);
-
-        console.log("Deposit Result:", result);
-
         if (result.success) {
           notify(
             "success",
@@ -229,7 +205,6 @@ export default function DashboardPage() {
             `${result.message || "Funds deposited successfully"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
           );
         } else {
-          console.error("Deposit failed:", result.error);
           notify(
             "error",
             "Failed to deposit funds",
@@ -237,7 +212,6 @@ export default function DashboardPage() {
           );
         }
       } catch (error) {
-        console.error("Exception in handleDeposit:", error);
         notify(
           "error",
           "Failed to deposit funds",
@@ -250,7 +224,6 @@ export default function DashboardPage() {
     [wallet, notify],
   );
 
-  // START PAYROLL
   const handleStartPayroll = React.useCallback(async () => {
     if (!wallet) {
       notify(
@@ -261,7 +234,6 @@ export default function DashboardPage() {
       return;
     }
 
-    // Check if company details exist (payroll initialized)
     const companyDetails = localStorage.getItem("companyDetails");
     if (!companyDetails) {
       notify(
@@ -275,9 +247,6 @@ export default function DashboardPage() {
     setIsLoading(true);
     try {
       const result = await contractInteraction.startPayroll(wallet);
-
-      console.log("Start Payroll Result:", result);
-
       if (result.success) {
         notify(
           "success",
@@ -285,7 +254,6 @@ export default function DashboardPage() {
           `${result.message || "Payroll started successfully"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
         );
       } else {
-        console.error("Start payroll failed:", result.error);
         notify(
           "error",
           "Failed to start payroll",
@@ -293,7 +261,6 @@ export default function DashboardPage() {
         );
       }
     } catch (error) {
-      console.error("Exception in handleStartPayroll:", error);
       notify(
         "error",
         "Failed to start payroll",
@@ -304,7 +271,6 @@ export default function DashboardPage() {
     }
   }, [wallet, notify]);
 
-  // DEBUG ADMIN STATE
   const handleDebugAdminState = React.useCallback(async () => {
     if (!wallet) {
       notify(
@@ -318,7 +284,6 @@ export default function DashboardPage() {
     setIsLoading(true);
     try {
       const result = await contractInteraction.debugAdminState(wallet);
-
       if (result.success) {
         notify(
           "success",
@@ -333,7 +298,6 @@ export default function DashboardPage() {
         );
       }
     } catch (error) {
-      console.error("Exception in handleDebugAdminState:", error);
       notify(
         "error",
         "Debug failed",
@@ -344,16 +308,11 @@ export default function DashboardPage() {
     }
   }, [wallet, notify]);
 
-  // GET EMPLOYEE DETAILS
   const handleGetEmployeeDetails = React.useCallback(async () => {
-    if (!wallet) {
-      console.log("[Employee Details] Wallet not connected");
-      return;
-    }
+    if (!wallet) return;
 
     const adminPubkey = localStorage.getItem("adminPubkey");
     if (!adminPubkey) {
-      console.log("[Employee Details] Admin pubkey not found in localStorage");
       notify(
         "error",
         "Admin wallet not set",
@@ -361,13 +320,6 @@ export default function DashboardPage() {
       );
       return;
     }
-
-    console.log("[Employee Details] Starting fetch...");
-    console.log(
-      "[Employee Details] Employee Wallet:",
-      wallet.publicKey.toBase58(),
-    );
-    console.log("[Employee Details] Admin Pubkey:", adminPubkey);
 
     setIsLoadingEmployeeDetails(true);
     try {
@@ -375,34 +327,23 @@ export default function DashboardPage() {
         wallet,
         adminPubkey,
       );
-
-      console.log("[Employee Details] Result:", result);
-
       if (result.success) {
-        console.log("[Employee Details] ✅ Success - Data:", result.data);
         setEmployeeDetails(result.data);
       } else {
-        console.log("[Employee Details] ❌ Failed:", result.error);
         setEmployeeDetails(null);
       }
     } catch (error) {
-      console.error("[Employee Details] Exception:", error);
       setEmployeeDetails(null);
     } finally {
       setIsLoadingEmployeeDetails(false);
     }
   }, [wallet, notify]);
 
-  // GET COMPANY DETAILS
   const handleGetCompanyDetails = React.useCallback(async () => {
-    if (!wallet) {
-      console.log("[Company Details] Wallet not connected");
-      return;
-    }
+    if (!wallet) return;
 
     const adminPubkey = localStorage.getItem("adminPubkey");
     if (!adminPubkey) {
-      console.log("[Company Details] Admin pubkey not found in localStorage");
       notify(
         "error",
         "Admin wallet not set",
@@ -410,9 +351,6 @@ export default function DashboardPage() {
       );
       return;
     }
-
-    console.log("[Company Details] Starting fetch...");
-    console.log("[Company Details] Admin Pubkey:", adminPubkey);
 
     setIsLoadingCompanyDetails(true);
     try {
@@ -420,34 +358,23 @@ export default function DashboardPage() {
         wallet,
         adminPubkey,
       );
-
-      console.log("[Company Details] Result:", result);
-
       if (result.success) {
-        console.log("[Company Details] ✅ Success - Data:", result.data);
         setFetchedCompanyDetails(result.data);
       } else {
-        console.log("[Company Details] ❌ Failed:", result.error);
         setFetchedCompanyDetails(null);
       }
     } catch (error) {
-      console.error("[Company Details] Exception:", error);
       setFetchedCompanyDetails(null);
     } finally {
       setIsLoadingCompanyDetails(false);
     }
   }, [wallet, notify]);
 
-  // CHECK CLAIM ELIGIBILITY
   const handleCheckClaimEligibility = React.useCallback(async () => {
-    if (!wallet) {
-      console.log("[Claim Eligibility] Wallet not connected");
-      return;
-    }
+    if (!wallet) return;
 
     const adminPubkey = localStorage.getItem("adminPubkey");
     if (!adminPubkey) {
-      console.log("[Claim Eligibility] Admin pubkey not found in localStorage");
       notify(
         "error",
         "Admin wallet not set",
@@ -456,46 +383,26 @@ export default function DashboardPage() {
       return;
     }
 
-    console.log("[Claim Eligibility] Starting check...");
-    console.log(
-      "[Claim Eligibility] Employee Wallet:",
-      wallet.publicKey.toBase58(),
-    );
-    console.log("[Claim Eligibility] Admin Pubkey:", adminPubkey);
-
     setIsCheckingEligibility(true);
     try {
       const result = await contractInteraction.checkClaimEligibility(
         wallet,
         adminPubkey,
       );
-
-      console.log("[Claim Eligibility] Result:", result);
-
       if (result.success && result.data) {
-        console.log("[Claim Eligibility] ✅ Success - Data:", result.data);
-        console.log("[Claim Eligibility] Eligible:", result.data.eligible);
-        console.log(
-          "[Claim Eligibility] Next Claim Date:",
-          result.data.nextClaimDate,
-        );
         setClaimEligibility(result.data);
       } else {
-        console.log("[Claim Eligibility] ❌ Failed:", result.error);
         setClaimEligibility(null);
       }
     } catch (error) {
-      console.error("[Claim Eligibility] Exception:", error);
       setClaimEligibility(null);
     } finally {
       setIsCheckingEligibility(false);
     }
   }, [wallet, notify]);
 
-  // CLAIM PAYMENT
   const handleClaimPayment = React.useCallback(async () => {
     if (!wallet) {
-      console.log("[Claim Payment] Wallet not connected");
       notify(
         "error",
         "Wallet not connected",
@@ -506,7 +413,6 @@ export default function DashboardPage() {
 
     const adminPubkey = localStorage.getItem("adminPubkey");
     if (!adminPubkey) {
-      console.log("[Claim Payment] Admin pubkey not found in localStorage");
       notify(
         "error",
         "Admin wallet not set",
@@ -515,63 +421,39 @@ export default function DashboardPage() {
       return;
     }
 
-    console.log("\n========== CLAIM PAYMENT STARTED ==========");
-    console.log(
-      "[Claim Payment] Employee Wallet:",
-      wallet.publicKey.toBase58(),
-    );
-    console.log("[Claim Payment] Admin Pubkey:", adminPubkey);
-    console.log("[Claim Payment] Current Eligibility:", claimEligibility);
-
     setIsLoading(true);
     try {
-      console.log("[Claim Payment] Calling contractInteraction.claimAmount...");
       const result = await contractInteraction.claimAmount(wallet, adminPubkey);
-
-      console.log("[Claim Payment] Result:", result);
-
       if (result.success) {
-        console.log("[Claim Payment] ✅ SUCCESS!");
-        console.log("[Claim Payment] Transaction:", result.data?.response);
         notify(
           "success",
           "Payment claimed successfully",
           `${result.message || "Funds transferred to your wallet"}${result.data?.response ? ` | TX: ${result.data.response}` : ""}`,
         );
-
-        console.log(
-          "[Claim Payment] Refreshing employee details and eligibility...",
-        );
-        // Refresh employee details and eligibility after claim
         await handleGetEmployeeDetails();
         await handleCheckClaimEligibility();
-        console.log("[Claim Payment] Refresh complete");
       } else {
-        console.error("[Claim Payment] ❌ FAILED:", result.error);
         const { title, message } = formatErrorMessage(
           result.error || "Unknown error occurred",
         );
         notify("error", title, message);
       }
     } catch (error) {
-      console.error("[Claim Payment] ❌ EXCEPTION:", error);
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
       const { title, message } = formatErrorMessage(errorMessage);
       notify("error", title, message);
     } finally {
       setIsLoading(false);
-      console.log("========== CLAIM PAYMENT ENDED ==========\n");
     }
   }, [
     wallet,
     notify,
     handleGetEmployeeDetails,
     handleCheckClaimEligibility,
-    claimEligibility,
+    formatErrorMessage,
   ]);
 
-  // handler to change the file
   const handleFileChange = React.useCallback((file: File | null) => {
     setFile(file);
   }, []);
@@ -599,15 +481,11 @@ export default function DashboardPage() {
   );
 
   React.useEffect(() => {
-    // if only file is present
     if (file) {
       Papa.parse(file, {
         header: true,
         complete: (results) => {
-          // data is logging properly
-          console.log("Parsed CSV Data:", results.data);
           setEmployees(results.data as Employee[]);
-          /// Fix: storing on the localstorage for now, we can change this to a more secure storage later
           localStorage.setItem("employees", JSON.stringify(results.data));
         },
         error: (error) => {
@@ -616,7 +494,6 @@ export default function DashboardPage() {
       });
     } else {
       setEmployees([]);
-      console.log("No file selected");
     }
   }, [file]);
 
@@ -626,23 +503,18 @@ export default function DashboardPage() {
     }
   }, []);
 
-  // Load company details from localStorage and derive payroll PDA
   React.useEffect(() => {
     const loadedCompanyDetails = localStorage.getItem("companyDetails");
-
     if (loadedCompanyDetails && role === "admin") {
       try {
         const details = JSON.parse(loadedCompanyDetails);
         setCompanyDetails(details);
-
-        // Derive payroll PDA if wallet is connected
         if (wallet?.publicKey) {
           const programId = new PublicKey(idl.address);
           const [payrollPda] = PublicKey.findProgramAddressSync(
             [Buffer.from("payroll"), wallet.publicKey.toBuffer()],
             programId,
           );
-
           notify(
             "success",
             "Company details loaded",
@@ -658,27 +530,27 @@ export default function DashboardPage() {
   return (
     <>
       <main className="flex flex-col w-full bg-black min-h-screen">
-        {/* Keeping Navbar for wallet connection if not inside sidebar areas */}
-        <div className="sticky top-0 z-50 w-full">
-          <Navbar />
-        </div>
         <RoleSelectionModal />
 
         {role === "admin" && (
           <div className="flex w-full">
-            <DashboardSidebar />
-            <AdminContent
-              onHandleAddWorker={handleAddWorkerToPayroll}
-              onHandleSaveCompanyDetails={handleSaveCompanyDetails}
-              onHandleDeposit={handleDeposit}
-              onHandleStartPayroll={handleStartPayroll}
-              onHandleDebugState={handleDebugAdminState}
-              onFileChange={handleFileChange}
-              employees={employees}
-              onAddWorker={handleAddWorker}
-              onUpdateWorker={handleUpdateWorker}
-              isLoading={isLoading}
-            />
+            <DashboardDemo1Sidebar />
+            {activeTab === "view" ? (
+              <FinancialOverviewView />
+            ) : (
+              <AdminContent
+                onHandleAddWorker={handleAddWorkerToPayroll}
+                onHandleSaveCompanyDetails={handleSaveCompanyDetails}
+                onHandleDeposit={handleDeposit}
+                onHandleStartPayroll={handleStartPayroll}
+                onHandleDebugState={handleDebugAdminState}
+                onFileChange={handleFileChange}
+                employees={employees}
+                onAddWorker={handleAddWorker}
+                onUpdateWorker={handleUpdateWorker}
+                isLoading={isLoading}
+              />
+            )}
           </div>
         )}
 
@@ -686,6 +558,7 @@ export default function DashboardPage() {
           <div className="flex w-full min-h-screen">
             <WorkerSidebar />
             <div className="flex flex-col flex-1 w-full bg-[#000000]">
+              <TopNavbar />
               <WorkerContent
                 isLoading={isLoading}
                 employeeDetails={employeeDetails}
