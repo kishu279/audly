@@ -81,16 +81,16 @@ export function RoleSelectionModal() {
         {!showAdminInput ? (
           <div className="flex flex-col gap-4 mt-6">
             <Button
-              variant="ghost_spacex"
-              size="spacex_large"
+              variant="ghost"
+              size="lg"
               className="w-full justify-center"
               onClick={() => setRole("admin")}
             >
               I AM A COMPANY OWNER (ADMIN)
             </Button>
             <Button
-              variant="ghost_spacex"
-              size="spacex_large"
+              variant="ghost"
+              size="lg"
               className="w-full justify-center opacity-70 hover:opacity-100"
               onClick={handleWorkerSelection}
             >
@@ -116,16 +116,16 @@ export function RoleSelectionModal() {
             </div>
             <div className="flex gap-3">
               <Button
-                variant="ghost_spacex"
-                size="spacex_large"
+                variant="ghost"
+                size="lg"
                 className="flex-1 justify-center opacity-70 hover:opacity-100"
                 onClick={handleBack}
               >
                 BACK
               </Button>
               <Button
-                variant="ghost_spacex"
-                size="spacex_large"
+                variant="ghost"
+                size="lg"
                 className="flex-1 justify-center"
                 onClick={handleAdminWalletSubmit}
               >

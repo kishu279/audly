@@ -14,6 +14,7 @@ import { Employee } from "@/lib/types";
 import { AnchorWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { contractInteraction } from "@/lib/contract-interaction";
 import { FeatureComingSoonTooltip } from "@/components/ui/FeatureComingSoonTooltip";
+import { toast } from "sonner";
 
 interface PayrollState {
   totalBudget: string | number;
@@ -110,15 +111,34 @@ export function FinancialOverviewView() {
       console.log("Admin public key not found in localStorage");
       return;
     }
-    const result = await contractInteraction.getPayrollState(
-      wallet as AnchorWallet,
-      adminPubkey,
-    );
+    
+    try {
+      const result = await contractInteraction.getPayrollState(
+        wallet as AnchorWallet,
+        adminPubkey,
+      );
 
-    if (result.success && "data" in result) {
-      setPayrollState(result.data);
+      if (result.success && "data" in result) {
+        setPayrollState(result.data);
+      } else if (!result.success && "error" in result) {
+        const errorMsg = result.error?.toString() || "Unknown error";
+        if (errorMsg.includes("Failed to fetch") || errorMsg.includes("fetch")) {
+          toast.error("Network Connection Error", {
+            description: "Unable to connect to Solana cluster. Use the debugger (+ button) to switch networks.",
+          });
+        } else {
+          toast.error("Failed to fetch payroll state", {
+            description: errorMsg,
+          });
+        }
+      }
+      console.log("Payroll State:", { result });
+    } catch (error) {
+      console.error("Error fetching payroll state:", error);
+      toast.error("Network Connection Error", {
+        description: "Unable to connect to Solana cluster. Use the debugger (+ button) to switch networks.",
+      });
     }
-    console.log("Payroll State:", { result });
   }, [wallet]);
 
   React.useEffect(() => {

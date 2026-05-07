@@ -3,6 +3,7 @@ import "./globals.css";
 import { spaceGrotesk } from "./fonts";
 import WalletContextProvider from "@/contexts/WalletContextProvider";
 import { NotificationList } from "@/components/ui/NotificationList";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Audly",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <WalletContextProvider>
           {children}
           <NotificationList />
+          <Toaster />
         </WalletContextProvider>
       </body>
     </html>
