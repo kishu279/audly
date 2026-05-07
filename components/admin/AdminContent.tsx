@@ -426,7 +426,7 @@ export function AdminContent({
                               </span>
                             </p>
                             <Button
-                              variant="ghost"
+                              variant="ghost_spacex"
                               size="sm"
                               className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-[#e5e2e1] hover:bg-[rgba(255,255,255,0.08)] text-[10px] uppercase tracking-[0.1em] rounded-[2px] h-8"
                               onClick={() => {

@@ -15,9 +15,9 @@ import { AnchorWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { contractInteraction } from "@/lib/contract-interaction";
 
 interface PayrollState {
-  totalBudget: string;
-  frequency: string;
-  startTime: string;
+  totalBudget: string | number;
+  frequency: any;
+  startTime: string | number;
   employeeCount: string;
   vaultBalance: number | null;
 }
@@ -36,7 +36,7 @@ export function FinancialOverviewView() {
   }, []);
 
   const totalBudget = payrollState?.totalBudget
-    ? parseFloat(payrollState.totalBudget)
+    ? parseFloat(payrollState.totalBudget.toString())
     : companyDetails?.totalAmount || 0;
   const totalSpent = employees.reduce((sum, emp) => sum + emp.amount, 0);
   const remainingBalance = payrollState?.vaultBalance || balance || 0;
@@ -46,7 +46,7 @@ export function FinancialOverviewView() {
   const paymentFrequency =
     payrollState?.frequency || companyDetails?.frequency || null;
   const startTime = payrollState?.startTime
-    ? new Date(parseInt(payrollState.startTime) * 1000).toLocaleString()
+    ? new Date(parseInt(payrollState.startTime.toString()) * 1000).toLocaleString()
     : null;
 
   const kpiMetrics: KPIMetric[] = [
@@ -112,7 +112,7 @@ export function FinancialOverviewView() {
       adminPubkey,
     );
 
-    if (result.success && result.data) {
+    if (result.success && 'data' in result) {
       setPayrollState(result.data);
     }
     console.log("Payroll State:", { result });
